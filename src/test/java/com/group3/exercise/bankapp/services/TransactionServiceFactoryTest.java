@@ -1,9 +1,8 @@
-package com.group3.exercise.bankapp.services.impl;
+package com.group3.exercise.bankapp.services;
 
 import com.group3.exercise.bankapp.entities.Account;
 import com.group3.exercise.bankapp.entities.InterestAccount;
 import com.group3.exercise.bankapp.exceptions.InvalidAccountTypeException;
-import com.group3.exercise.bankapp.services.TransactionServiceFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

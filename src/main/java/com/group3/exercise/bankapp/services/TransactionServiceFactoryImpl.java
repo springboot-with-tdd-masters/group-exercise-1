@@ -1,16 +1,15 @@
-package com.group3.exercise.bankapp.services.impl;
+package com.group3.exercise.bankapp.services;
 
 import com.group3.exercise.bankapp.entities.Account;
 import com.group3.exercise.bankapp.entities.InterestAccount;
 import com.group3.exercise.bankapp.exceptions.InvalidAccountTypeException;
-import com.group3.exercise.bankapp.services.TransactionService;
-import com.group3.exercise.bankapp.services.TransactionServiceFactory;
+import org.springframework.stereotype.Service;
 
-import javax.transaction.InvalidTransactionException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Service
 public class TransactionServiceFactoryImpl implements TransactionServiceFactory {
 
     private final Map<String, Class<? extends Account>> acctLookup;

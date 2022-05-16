@@ -1,10 +1,12 @@
-package com.group3.exercise.bankapp.services.impl;
+package com.group3.exercise.bankapp.services;
 
 import com.group3.exercise.bankapp.entities.Account;
 import com.group3.exercise.bankapp.entities.InterestAccount;
 import com.group3.exercise.bankapp.services.TransactionService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+@Service
 public class InterestTransactionService implements TransactionService {
 
     private final Double interest;
@@ -12,7 +14,7 @@ public class InterestTransactionService implements TransactionService {
 
     public InterestTransactionService(
             @Value("${interest.charge:.03}") Double interest,
-            @Value("${interest.minimumBalance}") Double minimumBalance){
+            @Value("${interest.minimumBal}") Double minimumBalance){
         this.interest = interest;
         this.minimumBalance = minimumBalance;
     }
