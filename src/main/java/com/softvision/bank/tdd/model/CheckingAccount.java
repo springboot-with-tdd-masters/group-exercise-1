@@ -1,4 +1,4 @@
-package model;
+package com.softvision.bank.tdd.model;
 
 import javax.persistence.Entity;
 

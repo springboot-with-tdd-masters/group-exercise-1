@@ -1,4 +1,4 @@
-package model;
+package com.softvision.bank.tdd.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
