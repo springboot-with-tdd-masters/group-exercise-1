@@ -2,6 +2,7 @@ package com.advancejava.groupexercise1.entity;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 
@@ -22,21 +23,107 @@ public abstract class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String name;
+    @NotNull
+    protected String name;
 
-    private String type;
+    @NotNull
+    protected String type;
 
-    private String acctNumber;
+    @NotNull
+    protected String acctNumber;
 
-    private Double balance;
+    @NotNull
+    protected Double balance;
 
-    private Double minimumBalance;
+    @NotNull
+    protected Double minimumBalance;
 
-    private Double penalty;
+    @NotNull
+    protected Double penalty;
 
-    private Double transactionCharge;
+    @NotNull
+    protected Double transactionCharge;
 
-    private Double interestCharge;
+    @NotNull
+    protected Double interestCharge;
 
+    public Account() {
 
+    }
+
+    public Account(String name){
+        this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getAcctNumber() {
+        return acctNumber;
+    }
+
+    public void setAcctNumber(String acctNumber) {
+        this.acctNumber = acctNumber;
+    }
+
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
+    }
+
+    public Double getMinimumBalance() {
+        return minimumBalance;
+    }
+
+    public void setMinimumBalance(Double minimumBalance) {
+        this.minimumBalance = minimumBalance;
+    }
+
+    public Double getPenalty() {
+        return penalty;
+    }
+
+    public void setPenalty(Double penalty) {
+        this.penalty = penalty;
+    }
+
+    public Double getTransactionCharge() {
+        return transactionCharge;
+    }
+
+    public void setTransactionCharge(Double transactionCharge) {
+        this.transactionCharge = transactionCharge;
+    }
+
+    public Double getInterestCharge() {
+        return interestCharge;
+    }
+
+    public void setInterestCharge(Double interestCharge) {
+        this.interestCharge = interestCharge;
+    }
 }
