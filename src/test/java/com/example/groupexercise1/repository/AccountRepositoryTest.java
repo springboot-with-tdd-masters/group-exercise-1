@@ -13,8 +13,8 @@ import com.example.groupexercise1.model.RegularAccount;
 @DataJpaTest
 public class AccountRepositoryTest {
 	
-	@Autowired
-	private AccountRepository accountRepository;
+	 @Autowired
+	 private AccountRepository accountRepository;
 	
 	 @Test
 	 @DisplayName("Should save RegularAccount Entity with the correct details")
@@ -22,8 +22,8 @@ public class AccountRepositoryTest {
 	     RegularAccount regAccount = new RegularAccount();
 	     regAccount.setAmount(5000d);
 	     
-	     accountRepository.save(regAccount);
+	     RegularAccount actualResponse = accountRepository.save(regAccount);
 	     
-	     assertThat(regAccount.getAmount()).isEqualTo(5000d);
+	     assertThat(actualResponse.getAmount()).isEqualTo(regAccount.getAmount());
 	 }	
 }
