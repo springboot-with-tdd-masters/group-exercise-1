@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class InterestTransactionService implements TransactionService {
 
-    private Double interest;
-    private Double minimumBalance;
+    private final Double interest;
+    private final Double minimumBalance;
 
     public InterestTransactionService(
             @Value("${interest.charge:.03}") Double interest,
@@ -19,7 +19,7 @@ public class InterestTransactionService implements TransactionService {
 
 
     @Override
-    public Account generateNewAccountDetails(String name, String acctNumber, String type) {
+    public Account generateNewAccountDetails(String name, String acctNumber) {
         // TODO generate Account entity here.
         Account account = new InterestAccount();
         account.setInterestCharge(interest);
@@ -30,12 +30,18 @@ public class InterestTransactionService implements TransactionService {
     @Override
     public Account withdraw(Account account, Double amount) {
         // TODO update account entity with business rules
-        return null;
+        Double currentBalance = account.getBalance();
+        Double updated = currentBalance - amount;
+        account.setBalance(updated);
+        return account;
     }
 
     @Override
     public Account deposit(Account account, Double amount) {
         // TODO update account entity with business rules
-        return null;
+        Double currentBalance = account.getBalance();
+        Double updated = currentBalance + amount;
+        account.setBalance(updated);
+        return account;
     }
 }

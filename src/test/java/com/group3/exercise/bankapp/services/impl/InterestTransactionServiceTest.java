@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class InterestTransactionServiceTest {
@@ -29,21 +30,32 @@ public class InterestTransactionServiceTest {
         // given
         String name = "MARIO A";
         String acctNbr = "12343555";
-        String type = "interest";
         // when
-        Account actual = interestTransactionService.generateNewAccountDetails(name, acctNbr, type);
+        Account actual = interestTransactionService.generateNewAccountDetails(name, acctNbr);
         // then
         assertEquals(actual.getInterestCharge(), 0.03);
         assertEquals(actual.getMinimumBalance(), 0.0);
     }
     @Test
-    @DisplayName("Should generate correct details Interest Account")
+    @DisplayName("Should withdraw from account")
     void shouldWithdrawFromAccount(){
-
+        // given
+        Account stub = new InterestAccount();
+        stub.setBalance(0.0);
+        // when
+        Account actual = interestTransactionService.withdraw(stub, 200.0);
+        // then
+        assertEquals(-200.0, actual.getBalance());
     }
     @Test
-    @DisplayName("Should generate correct details Interest Account")
+    @DisplayName("Should deposit to account")
     void shouldDepositToAccount(){
-
+        // given
+        Account stub = new InterestAccount();
+        stub.setBalance(0.0);
+        // when
+        Account actual = interestTransactionService.deposit(stub, 200.0);
+        // then
+        assertEquals(200.0, actual.getBalance());
     }
 }
