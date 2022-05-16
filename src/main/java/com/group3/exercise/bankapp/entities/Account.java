@@ -15,7 +15,7 @@ import javax.persistence.*;
 )
 @JsonSubTypes({
        // TODO @JsonSubTypes.Type(value = , name = "regular"),
-        @JsonSubTypes.Type(value = InterestAccount.class, name = "checking"),
+        @JsonSubTypes.Type(value = InterestAccount.class, name = "interest"),
        // TODO @JsonSubTypes.Type(value = , name = "interest")
 })
 public abstract class Account {
