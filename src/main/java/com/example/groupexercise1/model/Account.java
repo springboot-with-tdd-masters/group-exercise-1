@@ -1,5 +1,7 @@
 package com.example.groupexercise1.model;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,7 +36,6 @@ public abstract class Account {
 	private Double penalty;
 	private Double transactionCharge;
 	private Double interestCharge;
-	private Double amount;
 	
 	public Long getId() {
 		return id;
@@ -100,11 +101,25 @@ public abstract class Account {
 		this.interestCharge = interestCharge;
 	}
 	
-	public Double getAmount() {
-		return amount;
+	public abstract String getType();
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(acctNumber, balance, id, interestCharge, minimumBalance, name, penalty, transactionCharge);
 	}
 
-	public void setAmount(Double amount) {
-		this.amount = amount;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Account other = (Account) obj;
+		return Objects.equals(acctNumber, other.acctNumber) && Objects.equals(balance, other.balance)
+				&& Objects.equals(id, other.id) && Objects.equals(interestCharge, other.interestCharge)
+				&& Objects.equals(minimumBalance, other.minimumBalance) && Objects.equals(name, other.name)
+				&& Objects.equals(penalty, other.penalty) && Objects.equals(transactionCharge, other.transactionCharge);
 	}
 }

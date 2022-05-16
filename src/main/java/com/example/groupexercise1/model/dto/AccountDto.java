@@ -4,6 +4,7 @@ import com.example.groupexercise1.model.Account;
 
 public class AccountDto {
 	
+	private String type;
 	private Long id;
 	private String name;
 	private String acctNumber;
@@ -12,12 +13,12 @@ public class AccountDto {
 	private Double penalty;
 	private Double transactionCharge;
 	private Double interestCharge;
-	private Double amount;
 	
 	public AccountDto() {}
 	
-	public AccountDto(Long id, String name, String acctNumber, Double balance, Double minimumBalance, Double penalty,
-			Double transactionCharge, Double interestCharge, Double amount) {
+	public AccountDto(String type, Long id, String name, String acctNumber, Double balance, Double minimumBalance, Double penalty,
+			Double transactionCharge, Double interestCharge) {
+		this.type = type;
 		this.id = id;
 		this.name = name;
 		this.acctNumber = acctNumber;
@@ -26,15 +27,22 @@ public class AccountDto {
 		this.penalty = penalty;
 		this.transactionCharge = transactionCharge;
 		this.interestCharge = interestCharge;
-		this.amount = amount;
 	}
 	
 	public AccountDto(Account account) {
-		this(account.getId(), account.getName(), account.getAcctNumber(), account.getBalance(),
+		this(account.getType(), account.getId(), account.getName(), account.getAcctNumber(), account.getBalance(),
 				account.getMinimumBalance(), account.getPenalty(), account.getTransactionCharge(), 
-				account.getInterestCharge(), account.getAmount());
+				account.getInterestCharge());
 	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}	
+	
 	public Long getId() {
 		return id;
 	}
@@ -98,14 +106,4 @@ public class AccountDto {
 	public void setInterestCharge(Double interestCharge) {
 		this.interestCharge = interestCharge;
 	}
-	
-	public Double getAmount() {
-		return amount;
-	}
-
-	public void setAmount(Double amount) {
-		this.amount = amount;
-	}
-
-	
 }

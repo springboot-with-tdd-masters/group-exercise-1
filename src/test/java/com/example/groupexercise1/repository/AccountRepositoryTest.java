@@ -19,11 +19,11 @@ public class AccountRepositoryTest {
 	 @Test
 	 @DisplayName("Should save RegularAccount Entity with the correct details")
 	 public void saveBook() {
-	     RegularAccount regAccount = new RegularAccount();
-	     regAccount.setAmount(5000d);
+	     RegularAccount newAccount = new RegularAccount();
+	     newAccount.setMinimumBalance(500d);
 	     
-	     RegularAccount actualResponse = accountRepository.save(regAccount);
+	     RegularAccount actualResponse = accountRepository.save(newAccount);
 	     
-	     assertThat(actualResponse.getAmount()).isEqualTo(regAccount.getAmount());
+	     assertThat(actualResponse.getMinimumBalance()).isEqualTo(newAccount.getMinimumBalance());
 	 }	
 }

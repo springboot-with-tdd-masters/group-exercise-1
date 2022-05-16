@@ -1,6 +1,7 @@
 package com.example.groupexercise1.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -30,25 +31,26 @@ public class RegularAccountServiceTest {
     }
 	
 	@Test
-	@DisplayName("Should save Book entity and return correct details")
-	public void shouldSaveBookAndReturnDetails() {
-		Account requestAcct = new RegularAccount();
-		requestAcct.setAcctNumber("123456");
-		requestAcct.setAmount(5000d);
+	@DisplayName("Should save regular account and return correct details")
+	public void shouldSaveRegularAccountAndReturnDetails() {
+		String accountName = "Juan Dela Cruz";
 		
 		Account expectedResponse = new RegularAccount();
+		expectedResponse.setName("Juan Dela Cruz");
 		expectedResponse.setAcctNumber("123456");
-		expectedResponse.setAmount(5000d);
+		expectedResponse.setMinimumBalance(500d);
 		
-		when(accountRepository.save(requestAcct))
+		when(accountRepository.save(any()))
 			.thenReturn(expectedResponse);
 	    
-	    AccountDto actualResponse = regAcctService.createAccount(requestAcct);
+	    AccountDto actualResponse = regAcctService.createAccount(accountName);
 	    
-	    verify(accountRepository)
-	    	.save(requestAcct);
+	    verify(accountRepository).save(any());
+	    
+	    assertEquals(expectedResponse.getName(), actualResponse.getName());
 	    assertEquals(expectedResponse.getAcctNumber(), actualResponse.getAcctNumber());
-	    assertEquals(expectedResponse.getAmount(), actualResponse.getAmount());
+	    assertEquals(expectedResponse.getMinimumBalance(), actualResponse.getMinimumBalance());
+	    assertEquals(expectedResponse.getType(), actualResponse.getType());
 	}
 
 }
