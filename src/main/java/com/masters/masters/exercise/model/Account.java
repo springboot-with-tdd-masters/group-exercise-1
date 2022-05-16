@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import javax.persistence.*;
+import java.util.Random;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -20,7 +21,7 @@ import javax.persistence.*;
 public abstract class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
@@ -31,6 +32,12 @@ public abstract class Account {
     private double transactionCharge;
     private double interestCharge;
     private double amount;
+
+    public Account() {
+        Random rand = new Random();
+        long num = (long)(rand.nextDouble() * 10000000000L);
+        this.acctNumber = String.valueOf(num);
+    }
 
     public Long getId() {
         return id;
