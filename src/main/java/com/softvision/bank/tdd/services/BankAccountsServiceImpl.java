@@ -4,9 +4,9 @@ import com.softvision.bank.tdd.model.Account;
 import com.softvision.bank.tdd.model.CheckingAccount;
 import com.softvision.bank.tdd.exceptions.RecordNotFoundException;
 import com.softvision.bank.tdd.model.RegularAccount;
+import com.softvision.bank.tdd.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.softvision.bank.tdd.repositories.AccountRepository;
 
 import java.util.List;
 import java.util.Random;
@@ -53,7 +53,7 @@ public class BankAccountsServiceImpl implements BankAccountsService {
         return account;
     }
 
-    public static String generateRandomAcctNum() {
+    private static String generateRandomAcctNum() {
         return new Random().ints(12, 48, 57)
                 .mapToObj(c -> Character.toString((char) c))
                 .collect(Collectors.joining());
