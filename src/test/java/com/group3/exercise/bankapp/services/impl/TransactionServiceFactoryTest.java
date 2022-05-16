@@ -49,7 +49,7 @@ public class TransactionServiceFactoryTest {
     }
 
     @Test
-    @DisplayName("should call interest service when generate accountDetails")
+    @DisplayName("should call interest service when withdraw is called")
     void shouldCallInterestTransactionServiceWhenWithdrawIsCalled(){
         // given
         Account stub = new InterestAccount();
@@ -58,5 +58,16 @@ public class TransactionServiceFactoryTest {
         factory.withdraw(stub, 200.0);
         // then
         verify(interestTxnService, times(1)).withdraw(stub, 200.0);
+    }
+    @Test
+    @DisplayName("should call interest service when deposit is called")
+    void shouldCallInterestTransactionServiceWhenDepositIsCalled(){
+        // given
+        Account stub = new InterestAccount();
+        when(interestTxnService.deposit(any(Account.class), anyDouble())).thenReturn(new InterestAccount());
+        // when
+        factory.deposit(stub, 200.0);
+        // then
+        verify(interestTxnService, times(1)).deposit(stub, 200.0);
     }
 }
