@@ -30,7 +30,6 @@ public abstract class Account {
     private Double penalty;
     private Double transactionCharge;
     private Double interestCharge;
-    private Double amount;
 
     public Long getId() {
         return id;
@@ -94,13 +93,5 @@ public abstract class Account {
 
     public void setInterestCharge(Double interestCharge) {
         this.interestCharge = interestCharge;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
     }
 }
