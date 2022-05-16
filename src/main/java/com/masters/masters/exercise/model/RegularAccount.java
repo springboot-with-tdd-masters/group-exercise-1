@@ -1,0 +1,4 @@
+package com.masters.masters.exercise.model;
+
+public class RegularAccount extends Account{
+}
