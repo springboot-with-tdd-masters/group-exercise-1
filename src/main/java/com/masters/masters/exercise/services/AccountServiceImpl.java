@@ -1,47 +1,96 @@
 package com.masters.masters.exercise.services;
 
+import com.masters.masters.exercise.exception.AccountExistException;
+import com.masters.masters.exercise.exception.InvalidTypeException;
 import com.masters.masters.exercise.exception.RecordNotFoundException;
 import com.masters.masters.exercise.model.Account;
+import com.masters.masters.exercise.model.AccountType;
+import com.masters.masters.exercise.model.InterestAccount;
+import com.masters.masters.exercise.model.dto.AccountDto;
 import com.masters.masters.exercise.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class AccountServiceImpl {
 
-    @Autowired
-    private AccountRepository repo;
+	@Autowired
+	private AccountRepository repo;
 
-    // create
-    public Account createOrUpdateAccount(Account entity) throws RecordNotFoundException {
-        Optional<Account> account = repo.findById(entity.getId());
-        if (account.isPresent()) {
-            Account newEntity = account.get();
-            newEntity.setName(entity.getName());
-            newEntity.setBalance(entity.getBalance());
-            newEntity = repo.save(newEntity);
-            return newEntity;
-        } else {
-            entity = repo.save(entity);
-            return entity;
-        }
-    }
+	// create
+	public Account createOrUpdateAccount(AccountDto dto) throws RecordNotFoundException, InvalidTypeException, AccountExistException {
+		Account result = null;
 
-    // get account by id
-    // get account by acctNumber
-    //get all accounts
-    public List<Account> getAllAccounts() {
-        List<Account> accountList = repo.findAll();
-        if (accountList.size() > 0) {
-            return accountList;
-        } else {
-            return new ArrayList<Account>();
-        }
-    }
-    //withdraw/deposit
-    //delete
+		if(dto != null) {
+			Optional<Account> account = repo.findByName(dto.getName());
+
+			if(StringUtils.hasText(dto.getType())) {
+				String type = dto.getType();
+
+				if(type.equalsIgnoreCase(AccountType.REGULAR.toString())) {
+					if(account.isPresent()) {
+						Account newEntity = account.get();
+						newEntity.setName(account.get().getName());
+						newEntity.setBalance(account.get().getBalance());
+						newEntity = repo.save(newEntity);
+						result = newEntity;
+					} else {
+						// Update code here since the request has been changed
+					}
+				} else if(type.equalsIgnoreCase(AccountType.INTEREST.toString())) {
+					if(account.isPresent()) {
+						throw new AccountExistException("The account is already exist");
+					} else {
+						Account newAccount = new InterestAccount();
+						newAccount.setName(dto.getName());
+						result = repo.save(newAccount);
+					}
+				} else if(type.equalsIgnoreCase(AccountType.CHECKING.toString())) {
+					// Update code here for Checking Account
+				} else {
+					throw new InvalidTypeException("Invalid Account Type");
+				}
+
+			} else {
+				throw new InvalidTypeException("Invalid Account Type");
+			}
+		}
+
+		return result;
+	}
+
+	public List<Account> getAllAccounts() throws RecordNotFoundException {
+		List<Account> accountList = repo.findAll();
+		if (accountList.size() > 0) {
+			return accountList;
+		} else {
+			throw new RecordNotFoundException("No Record Found");
+		}
+	}
+	
+	public Account getAccountById(Long id) throws RecordNotFoundException {
+		Optional<Account> account = repo.findById(id);
+		return account.map(obj -> {
+            return obj;
+        })
+		.orElseThrow(() -> new RecordNotFoundException("No Record found with id: " + id));
+	}
+	
+	public Account deleteAccountById(Long id) throws RecordNotFoundException {
+		Optional<Account> account = repo.findById(id);
+		return account.map(obj -> {
+			repo.deleteById(obj.getId());
+            return obj;
+        })
+		.orElseThrow(() -> new RecordNotFoundException("No Record found with accountNumber: " + id));
+	}
+	
+	
+	//withdraw/deposit
+	//delete
+
 }
