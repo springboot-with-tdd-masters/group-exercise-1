@@ -15,19 +15,19 @@ import javax.persistence.*;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = RegularAccount.class, name = "regular"),
         @JsonSubTypes.Type(value = CheckingAccount.class, name = "checking"),
-        @JsonSubTypes.Type(value = InterestAccount.class, name = "interest")
-})
+        @JsonSubTypes.Type(value = InterestAccount.class, name = "interest")}
+        )
 public abstract class Account {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
-    protected String name;
+    private String name;
 
-    @NotNull
-    protected String type;
+
+   // private String type;
 
     @NotNull
     protected String acctNumber;
@@ -51,8 +51,13 @@ public abstract class Account {
 
     }
 
-    public Account(String name){
-        this.name = name;
+    public Account(String acctNumber, Double balance, Double minimumBalance, Double penalty, Double transactionCharge, Double interestCharge) {
+        this.acctNumber = acctNumber;
+        this.balance = balance;
+        this.minimumBalance = minimumBalance;
+        this.penalty = penalty;
+        this.transactionCharge = transactionCharge;
+        this.interestCharge = interestCharge;
     }
 
     public Integer getId() {
@@ -71,13 +76,13 @@ public abstract class Account {
         this.name = name;
     }
 
-    public String getType() {
+/*    public String getType() {
         return type;
     }
 
     public void setType(String type) {
         this.type = type;
-    }
+    }*/
 
     public String getAcctNumber() {
         return acctNumber;
