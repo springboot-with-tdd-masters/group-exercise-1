@@ -27,9 +27,6 @@ public abstract class Account {
 
     private String name;
 
-
-   // private String type;
-
     @NotNull
     protected String acctNumber;
 
@@ -76,14 +73,6 @@ public abstract class Account {
     public void setName(String name) {
         this.name = name;
     }
-
-/*    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }*/
 
     public String getAcctNumber() {
         return acctNumber;
