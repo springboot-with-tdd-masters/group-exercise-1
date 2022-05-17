@@ -31,4 +31,9 @@ public class BankController {
     @PutMapping("/accounts")
     public Account updateAccount(Account acct){ return bankService.updateAccount(acct); }
 
+    @DeleteMapping("/accounts/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteAccount(@PathVariable Integer id) {
+        bankService.deleteAccount(id);
+    }
 }
