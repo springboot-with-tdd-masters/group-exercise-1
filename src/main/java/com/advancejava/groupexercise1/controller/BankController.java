@@ -19,7 +19,7 @@ public class BankController {
 
     @PostMapping("/accounts")
     public ResponseEntity<Account> createAccount(@RequestBody Account acct){
-        return new ResponseEntity<>(bankService.createAccount(acct), HttpStatus.OK);
+        return new ResponseEntity<>(bankService.createAccount(acct), HttpStatus.CREATED);
     }
 
     @GetMapping("/accounts/{id}")

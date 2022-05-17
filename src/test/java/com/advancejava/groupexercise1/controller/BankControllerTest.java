@@ -43,7 +43,7 @@ public class BankControllerTest {
                 .andReturn().getResponse();
 
         //assert
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
 
     }
 }
