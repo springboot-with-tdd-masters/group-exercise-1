@@ -18,7 +18,7 @@ public class AccountRepositoryTest {
 	
 	 @Test
 	 @DisplayName("Should save RegularAccount Entity with the correct details")
-	 public void saveBook() {
+	 public void saveRegularAccount() {
 	     RegularAccount newAccount = new RegularAccount();
 	     newAccount.setMinimumBalance(500d);
 	     

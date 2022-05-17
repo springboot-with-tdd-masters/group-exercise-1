@@ -11,7 +11,7 @@ import com.example.groupexercise1.model.dto.AccountDto;
 import com.example.groupexercise1.repository.AccountRepository;
 import com.example.groupexercise1.util.AccountGenerator;
 
-@Service
+@Service(value = "regular")
 public class RegularAccountService implements AccountService {
 
 	@Autowired
