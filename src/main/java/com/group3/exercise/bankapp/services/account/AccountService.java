@@ -1,4 +1,4 @@
-package com.group3.exercise.bankapp.services;
+package com.group3.exercise.bankapp.services.account;
 
 import com.group3.exercise.bankapp.request.TransactionRequest;
 import com.group3.exercise.bankapp.request.TransactionResponse;

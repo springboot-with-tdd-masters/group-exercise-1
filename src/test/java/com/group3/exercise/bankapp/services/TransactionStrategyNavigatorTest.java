@@ -3,6 +3,9 @@ package com.group3.exercise.bankapp.services;
 import com.group3.exercise.bankapp.entities.Account;
 import com.group3.exercise.bankapp.entities.InterestAccount;
 import com.group3.exercise.bankapp.exceptions.InvalidAccountTypeException;
+import com.group3.exercise.bankapp.services.transaction.TransactionStrategyNavigator;
+import com.group3.exercise.bankapp.services.transaction.impl.InterestTransactionStrategy;
+import com.group3.exercise.bankapp.services.transaction.impl.TransactionStrategyNavigatorImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,16 +18,16 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TransactionServiceFactoryTest {
+public class TransactionStrategyNavigatorTest {
 
-    private TransactionServiceFactory factory;
+    private TransactionStrategyNavigator navigator;
 
     @Mock
-    private InterestTransactionService interestTxnService;
+    private InterestTransactionStrategy interestTxnService;
 
     @BeforeEach
     void setup(){
-        factory = new TransactionServiceFactoryImpl(interestTxnService);
+        navigator = new TransactionStrategyNavigatorImpl(interestTxnService);
     }
 
     @Test
@@ -33,7 +36,7 @@ public class TransactionServiceFactoryTest {
         // given
         when(interestTxnService.generateNewAccountDetails(anyString(), anyString())).thenReturn(new InterestAccount());
         // when
-        factory.generateNewAccountDetails("JOHN DOE", "987654321", "interest");
+        navigator.generateNewAccountDetails("JOHN DOE", "987654321", "interest");
         // then
         verify(interestTxnService, times(1)).generateNewAccountDetails("JOHN DOE", "987654321");
     }
@@ -44,28 +47,28 @@ public class TransactionServiceFactoryTest {
         // given
         // when
         // then
-        assertThrows(InvalidAccountTypeException.class, () -> factory.generateNewAccountDetails("JOHN DOE", "987654321", "credit"));
+        assertThrows(InvalidAccountTypeException.class, () -> navigator.generateNewAccountDetails("JOHN DOE", "987654321", "credit"));
     }
 
     @Test
     @DisplayName("should call interest service when withdraw is called")
-    void shouldCallInterestTransactionServiceWhenWithdrawIsCalled(){
+    void shouldCallInterestTransactionStrategyWhenWithdrawIsCalled(){
         // given
         Account stub = new InterestAccount();
         when(interestTxnService.withdraw(any(Account.class), anyDouble())).thenReturn(new InterestAccount());
         // when
-        factory.withdraw(stub, 200.0);
+        navigator.withdraw(stub, 200.0);
         // then
         verify(interestTxnService, times(1)).withdraw(stub, 200.0);
     }
     @Test
     @DisplayName("should call interest service when deposit is called")
-    void shouldCallInterestTransactionServiceWhenDepositIsCalled(){
+    void shouldCallInterestTransactionStrategyWhenDepositIsCalled(){
         // given
         Account stub = new InterestAccount();
         when(interestTxnService.deposit(any(Account.class), anyDouble())).thenReturn(new InterestAccount());
         // when
-        factory.deposit(stub, 200.0);
+        navigator.deposit(stub, 200.0);
         // then
         verify(interestTxnService, times(1)).deposit(stub, 200.0);
     }

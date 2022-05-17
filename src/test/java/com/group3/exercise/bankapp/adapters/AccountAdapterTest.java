@@ -44,6 +44,7 @@ public class AccountAdapterTest {
         assertEquals(0.0, actual.getPenalty());
         assertEquals("123456789", account.getAcctNumber());
     }
+
     @Test
     @DisplayName("should throw InvalidAccountTransactionException on null object")
     void shouldThrowInvalidAccountTransactionExceptionNull(){

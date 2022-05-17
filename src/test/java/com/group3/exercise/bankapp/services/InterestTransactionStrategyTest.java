@@ -3,6 +3,7 @@ package com.group3.exercise.bankapp.services;
 
 import com.group3.exercise.bankapp.entities.Account;
 import com.group3.exercise.bankapp.entities.InterestAccount;
+import com.group3.exercise.bankapp.services.transaction.impl.InterestTransactionStrategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,13 +13,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-public class InterestTransactionServiceTest {
+public class InterestTransactionStrategyTest {
 
-    InterestTransactionService interestTransactionService;
+    InterestTransactionStrategy interestTransactionStrategy;
 
     @BeforeEach
     void setup(){
-    interestTransactionService = new InterestTransactionService(0.03, 0.0);
+    interestTransactionStrategy = new InterestTransactionStrategy(0.03, 0.0);
     }
 
 
@@ -29,7 +30,7 @@ public class InterestTransactionServiceTest {
         String name = "MARIO A";
         String acctNbr = "12343555";
         // when
-        Account actual = interestTransactionService.generateNewAccountDetails(name, acctNbr);
+        Account actual = interestTransactionStrategy.generateNewAccountDetails(name, acctNbr);
         // then
         assertEquals(actual.getInterestCharge(), 0.03);
         assertEquals(actual.getMinimumBalance(), 0.0);
@@ -41,7 +42,7 @@ public class InterestTransactionServiceTest {
         Account stub = new InterestAccount();
         stub.setBalance(0.0);
         // when
-        Account actual = interestTransactionService.withdraw(stub, 200.0);
+        Account actual = interestTransactionStrategy.withdraw(stub, 200.0);
         // then
         assertEquals(-200.0, actual.getBalance());
     }
@@ -52,7 +53,7 @@ public class InterestTransactionServiceTest {
         Account stub = new InterestAccount();
         stub.setBalance(0.0);
         // when
-        Account actual = interestTransactionService.deposit(stub, 200.0);
+        Account actual = interestTransactionStrategy.deposit(stub, 200.0);
         // then
         assertEquals(200.0, actual.getBalance());
     }

@@ -1,8 +1,10 @@
-package com.group3.exercise.bankapp.services;
+package com.group3.exercise.bankapp.services.transaction.impl;
 
 import com.group3.exercise.bankapp.entities.Account;
 import com.group3.exercise.bankapp.entities.InterestAccount;
 import com.group3.exercise.bankapp.exceptions.InvalidAccountTypeException;
+import com.group3.exercise.bankapp.services.transaction.TransactionStrategy;
+import com.group3.exercise.bankapp.services.transaction.TransactionStrategyNavigator;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -10,19 +12,19 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class TransactionServiceFactoryImpl implements TransactionServiceFactory {
+public class TransactionStrategyNavigatorImpl implements TransactionStrategyNavigator {
 
     private final Map<String, Class<? extends Account>> acctLookup;
-    private final Map<Class<? extends Account>, TransactionService> txnLookup;
+    private final Map<Class<? extends Account>, TransactionStrategy> txnLookup;
 
-    public TransactionServiceFactoryImpl(
-            InterestTransactionService interestTransactionService
+    public TransactionStrategyNavigatorImpl(
+            InterestTransactionStrategy interestTransactionStrategy
             // TODO add other txn svc here
     ){
         txnLookup = new HashMap<>();
         acctLookup = new HashMap<>();
         acctLookup.put("interest", InterestAccount.class);
-        txnLookup.put(InterestAccount.class, interestTransactionService);
+        txnLookup.put(InterestAccount.class, interestTransactionStrategy);
     }
 
     @Override
