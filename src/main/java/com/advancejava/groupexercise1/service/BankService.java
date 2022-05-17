@@ -10,4 +10,5 @@ public interface BankService {
     public List<Account> getAccounts();
     public Account createAccount(Account acct);
     public Account updateAccount(Account acct);
+    public void deleteAccount(Integer id);
 }

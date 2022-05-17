@@ -38,5 +38,11 @@ public class BankServiceImpl implements BankService{
     @Override
     public Account updateAccount(Account acct) { return accountRepository.save(acct); }
 
+    @Override
+    public void deleteAccount(Integer id) {
+        getAccount(id);
+        accountRepository.deleteById(id);
+    }
+
 
 }
