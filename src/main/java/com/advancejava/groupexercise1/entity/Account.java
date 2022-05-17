@@ -6,6 +6,7 @@ import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 
+
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @JsonTypeInfo(
