@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -14,7 +15,7 @@ import javax.persistence.*;
         property = "type"
 )
 @JsonSubTypes({
-       // TODO @JsonSubTypes.Type(value = , name = "regular"),
+        @JsonSubTypes.Type(value = RegularAccount.class, name = "regular"),
         @JsonSubTypes.Type(value = InterestAccount.class, name = "checking"),
        // TODO @JsonSubTypes.Type(value = , name = "interest")
 })
@@ -30,6 +31,14 @@ public abstract class Account {
     private Double penalty;
     private Double transactionCharge;
     private Double interestCharge;
+
+    public Account() {}
+
+    public Account(String name, String acctNumber) {
+        this.name = name;
+        this.acctNumber = acctNumber;
+    }
+
     private Double amount;
 
     public Long getId() {
@@ -102,5 +111,18 @@ public abstract class Account {
 
     public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Objects.equals(acctNumber, account.acctNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(acctNumber);
     }
 }

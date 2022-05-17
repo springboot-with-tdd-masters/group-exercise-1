@@ -2,8 +2,8 @@ package com.group3.exercise.bankapp.services;
 
 import com.group3.exercise.bankapp.entities.Account;
 
-public interface TransactionService {
-    Account generateNewAccountDetails(String name, String acctNumber, String type);
-    Account withdraw(Account account, Double amount);
-    Account deposit(Account account, Double amount);
+public interface TransactionService<E extends Account> {
+    E generateNewAccountDetails(String name, String acctNumber);
+    E withdraw(E account, Double amount);
+    E deposit(E account, Double amount);
 }
