@@ -1,8 +1,8 @@
 package com.softvision.bank.tdd.services;
 
+import com.softvision.bank.tdd.exceptions.RecordNotFoundException;
 import com.softvision.bank.tdd.model.Account;
 import com.softvision.bank.tdd.model.Transaction;
-import com.softvision.bank.tdd.model.exceptions.RecordNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ public class TransactionServiceTests {
 
     @Test
     @DisplayName("Account - Should add account deposited")
-    void test_deposit() {
+    void test_deposit()  {
         //setup mocked returns
         Account mockedRegularAccount = getMockRegularAccount();
         when(mockedAccountRepository.findById(REG_MOCK_ACCT_ID)).thenReturn(Optional.of(mockedRegularAccount));
@@ -47,7 +47,7 @@ public class TransactionServiceTests {
 
     @Test
     @DisplayName("Regular Account - Should subtract amount withdrawn")
-    void test_withdraw_regularAcct() {
+    void test_withdraw_regularAcct()  {
         //setup mocked returns
         Account mockedRegularAccount = getMockRegularAccount();
         when(mockedAccountRepository.findById(REG_MOCK_ACCT_ID)).thenReturn(Optional.of(mockedRegularAccount));
@@ -65,7 +65,7 @@ public class TransactionServiceTests {
 
     @Test
     @DisplayName("Regular Account - Should subtract amount withdrawn with penalties")
-    void test_withdraw_regularAcct_withPenalties() {
+    void test_withdraw_regularAcct_withPenalties()  {
         //setup mocked returns
         Account mockedRegularAccount = getMockRegularAccount();
         mockedRegularAccount.setBalance(500);
@@ -85,7 +85,7 @@ public class TransactionServiceTests {
 
     @Test
     @DisplayName("Checking Account- Should subtract amount withdrawn")
-    void test_withdraw_checking() {
+    void test_withdraw_checking()  {
         //setup mocked returns
         Account mockedCheckingAccount = getMockCheckingAccount();
         when(mockedAccountRepository.findById(CHK_MOCK_ACCT_ID)).thenReturn(Optional.of(mockedCheckingAccount));
@@ -102,8 +102,8 @@ public class TransactionServiceTests {
 
     @Test
     @DisplayName("Checking Account- Should subtract amount withdrawn")
-    void test_withdraw_withPenalties() {
-        //setup mocked returns
+	void test_withdraw_withPenalties() {
+		// setup mocked returns
         Account mockedCheckingAccount = getMockCheckingAccount();
         mockedCheckingAccount.setBalance(90);
         when(mockedAccountRepository.findById(CHK_MOCK_ACCT_ID)).thenReturn(Optional.of(mockedCheckingAccount));

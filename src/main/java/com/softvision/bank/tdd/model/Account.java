@@ -25,16 +25,12 @@ public abstract class Account {
 
 	private double balance;
 
-	@JsonIgnore
 	private double minimumBalance;
 
-	@JsonIgnore
 	private double penalty;
 
-	@JsonIgnore
 	private double transactionCharge;
 
-	@JsonIgnore
 	private double interestCharge;
 
 	@JsonIgnore

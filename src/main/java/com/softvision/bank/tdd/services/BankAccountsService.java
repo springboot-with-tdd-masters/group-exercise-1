@@ -1,8 +1,8 @@
 package com.softvision.bank.tdd.services;
 
-import com.softvision.bank.tdd.model.Account;
-
 import java.util.List;
+
+import com.softvision.bank.tdd.model.Account;
 
 public interface BankAccountsService {
 
