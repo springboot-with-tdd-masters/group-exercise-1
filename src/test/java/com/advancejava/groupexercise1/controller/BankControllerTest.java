@@ -1,7 +1,9 @@
 package com.advancejava.groupexercise1.controller;
 
+import com.advancejava.groupexercise1.entity.Account;
+import com.advancejava.groupexercise1.entity.RegularAccount;
 import com.advancejava.groupexercise1.model.AccountRequest;
-import com.advancejava.groupexercise1.service.AccountService;
+import com.advancejava.groupexercise1.service.BankService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,24 +19,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @WebMvcTest
-public class AccountControllerTest {
+public class BankControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private AccountService accountService;
+    private BankService bankService;
 
-    ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DisplayName("Save endpoint should return 200 on successful service invocation.")
     public void save() throws Exception {
-        //arrange
-        AccountRequest accountRequest = new AccountRequest("John Doe", "regular");
+
+        String request = "{\n" +
+                "    \"name\": \"John Doe\",\n" +
+                "    \"type\": \"regular\"\n" +
+                "    \n" +
+                "}";
         //act
-        MockHttpServletResponse response = mockMvc.perform(post("/accounts").content(objectMapper
-                        .writeValueAsString(accountRequest)).contentType(MediaType.APPLICATION_JSON))
+        MockHttpServletResponse response = mockMvc.perform(post("/api/v1/accounts").content(
+                        request).contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
 
         //assert

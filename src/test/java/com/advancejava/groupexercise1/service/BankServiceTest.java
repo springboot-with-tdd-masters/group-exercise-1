@@ -1,6 +1,5 @@
 package com.advancejava.groupexercise1.service;
 
-import com.advancejava.groupexercise1.adaptor.AccountRequestToAccountAdaptor;
 import com.advancejava.groupexercise1.entity.Account;
 import com.advancejava.groupexercise1.model.AccountRequest;
 import com.advancejava.groupexercise1.repository.AccountRepository;
@@ -11,17 +10,15 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
-public class AccountServiceTest {
+public class BankServiceTest {
 
     @Mock
     private AccountRepository accountRepository;
 
-    @Mock
-    private AccountRequestToAccountAdaptor accountRequestToAccountAdaptor;
-
     @InjectMocks
-    private AccountService accountService = new AccountServiceImpl();
+    private BankService bankService = new BankServiceImpl();
 
     @BeforeEach
     public void setUp() {
@@ -30,23 +27,17 @@ public class AccountServiceTest {
 
     @Test
     public void testSave() {
-        //setup
-        AccountRequest accountRequest = new AccountRequest();
-        accountRequest.setName("John Doe");
-        accountRequest.setType("regular");
+
 
         Account account = mock(Account.class);
 
-        when(accountRequestToAccountAdaptor.convert(accountRequest))
+        when(accountRepository.save(account))
                 .thenReturn(account);
 
         //execute
-        accountService.save(accountRequest);
+        bankService.createAccount(account);
 
         //test
-        verify(accountRequestToAccountAdaptor)
-                .convert(accountRequest);
-
         verify(accountRepository)
                 .save(account);
     }
