@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.groupexercise1.exeption.InvalidAccountTypeException;
 import com.example.groupexercise1.model.Account;
 import com.example.groupexercise1.model.RegularAccount;
 import com.example.groupexercise1.model.dto.AccountDto;
@@ -34,7 +35,7 @@ public class AccountServiceImpl implements AccountService {
 			Account savedAccount = accountRepository.save(newAccount);
 			return new AccountDto(savedAccount);
 		} else {
-			throw new IllegalArgumentException("Account type not supported");
+			throw new InvalidAccountTypeException();
 		}
 	}
 
