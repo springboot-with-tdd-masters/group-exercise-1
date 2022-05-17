@@ -15,6 +15,5 @@ public class CheckingAccount extends Account{
         this.setPenalty(10.00);
         this.setTransactionCharge(1.00);
         this.setInterestCharge(0.00);
-        this.setType("checking");
     }
 }

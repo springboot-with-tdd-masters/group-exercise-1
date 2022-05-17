@@ -14,6 +14,5 @@ public class RegularAccount extends Account {
         this.setPenalty(10.00);
         this.setTransactionCharge(0.00);
         this.setInterestCharge(0.00);
-        this.setType("regular");
     }
 }

@@ -15,6 +15,5 @@ public class InterestAccount extends Account{
         this.setPenalty(0.00);
         this.setTransactionCharge(0.00);
         this.setInterestCharge(0.03);
-        this.setType("interest");
     }
 }

@@ -27,9 +27,7 @@ public abstract class Account {
     protected String name;
 
     @NotNull
-    protected String type;
-
-    @NotNull
+    @Column(unique = true)
     protected String acctNumber;
 
     @NotNull
@@ -69,14 +67,6 @@ public abstract class Account {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getAcctNumber() {
