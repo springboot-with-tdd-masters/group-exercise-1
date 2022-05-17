@@ -100,7 +100,7 @@ public class AccountControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("$[1].minimumBalance").value("100.0"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[2].type").value("interest"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$[2].name").value("Juan Dela Cruz II"))
-				.andExpect(MockMvcResultMatchers.jsonPath("$[2].minimumBalance").value("0"));
+				.andExpect(MockMvcResultMatchers.jsonPath("$[2].minimumBalance").value("0.0"));
 				
 		 verify(accountService).getAllAccounts();
 	}

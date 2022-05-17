@@ -1,7 +1,8 @@
 package com.example.groupexercise1.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,8 +27,8 @@ public class AccountController {
 	}
 	
 	@GetMapping
-	public AccountDto getAllAccounts() {
-		return null;
+	public List<AccountDto> getAllAccounts() {
+		return accountService.getAllAccounts();
 	}
 	
 }

@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import com.example.groupexercise1.model.CheckingAccount;
+import com.example.groupexercise1.model.InterestAccount;
 import com.example.groupexercise1.model.RegularAccount;
 
 
@@ -25,5 +27,31 @@ public class AccountRepositoryTest {
 	     RegularAccount actualResponse = accountRepository.save(newAccount);
 	     
 	     assertThat(actualResponse.getMinimumBalance()).isEqualTo(newAccount.getMinimumBalance());
-	 }	
+	 }
+	 
+	 
+	 @Test
+	 @DisplayName("Should return all accounts with correct details")
+	 public void getAllAccounts() {
+	     RegularAccount regularAccount = new RegularAccount();
+	     regularAccount.setName("Juan Dela Cruz");
+	     regularAccount.setMinimumBalance(500d);
+	     
+	     CheckingAccount checkingAccount = new CheckingAccount();
+	     checkingAccount.setName("Juan Dela Cruz");
+	     checkingAccount.setMinimumBalance(100d);
+	
+	     InterestAccount interestAccount = new InterestAccount();
+	     interestAccount.setName("Juan Dela Cruz");
+	     interestAccount.setMinimumBalance(0d);
+	
+	     RegularAccount savedRegAccount = accountRepository.save(regularAccount);
+	     CheckingAccount savedCheckAccount = accountRepository.save(checkingAccount);
+	     InterestAccount savedInterestAccount = accountRepository.save(interestAccount);
+	     
+	     assertThat(accountRepository.findAll())
+	     	.hasSize(3)
+	     	.contains(savedRegAccount, savedCheckAccount, savedInterestAccount);
+	 }
+	 
 }
