@@ -1,8 +1,11 @@
 package com.advancejava.groupexercise1.controller;
 
 import com.advancejava.groupexercise1.entity.Account;
+import com.advancejava.groupexercise1.service.BankService;
 import com.advancejava.groupexercise1.service.BankServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,12 +15,11 @@ import java.util.List;
 public class BankController {
 
     @Autowired
-    private BankServiceImpl bankService;
+    private BankService bankService;
 
     @PostMapping("/accounts")
-    public List<Account> createAccount(@RequestBody Account acct){
-        bankService.createAccount(acct);
-        return bankService.getAccounts();
+    public ResponseEntity<Account> createAccount(@RequestBody Account acct){
+        return new ResponseEntity<>(bankService.createAccount(acct), HttpStatus.CREATED);
     }
 
     @GetMapping("/accounts/{id}")
