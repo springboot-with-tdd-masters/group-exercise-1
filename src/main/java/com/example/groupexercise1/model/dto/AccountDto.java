@@ -1,5 +1,7 @@
 package com.example.groupexercise1.model.dto;
 
+import java.util.Objects;
+
 import com.example.groupexercise1.model.Account;
 
 public class AccountDto {
@@ -105,5 +107,27 @@ public class AccountDto {
 	
 	public void setInterestCharge(Double interestCharge) {
 		this.interestCharge = interestCharge;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(acctNumber, balance, id, interestCharge, minimumBalance, name, penalty, transactionCharge,
+				type);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AccountDto other = (AccountDto) obj;
+		return Objects.equals(acctNumber, other.acctNumber) && Objects.equals(balance, other.balance)
+				&& Objects.equals(id, other.id) && Objects.equals(interestCharge, other.interestCharge)
+				&& Objects.equals(minimumBalance, other.minimumBalance) && Objects.equals(name, other.name)
+				&& Objects.equals(penalty, other.penalty) && Objects.equals(transactionCharge, other.transactionCharge)
+				&& Objects.equals(type, other.type);
 	}
 }

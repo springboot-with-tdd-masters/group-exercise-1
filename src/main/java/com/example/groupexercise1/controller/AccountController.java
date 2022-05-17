@@ -2,6 +2,7 @@ package com.example.groupexercise1.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,15 +17,17 @@ import com.example.groupexercise1.service.AccountService;
 public class AccountController {
 	
 	@Autowired
-    @Qualifier("regular")
-	private AccountService regularAccountService;
+	private AccountService accountService;
 
 	
 	@PostMapping
 	public AccountDto createAccount(@RequestBody AccountRequestDto account) {
-		if(account.getType().equals("regular")) {
-			return regularAccountService.createAccount(account.getName());
-		}
+		return accountService.createAccount(account);
+	}
+	
+	@GetMapping
+	public AccountDto getAllAccounts() {
 		return null;
 	}
+	
 }
