@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 
@@ -18,7 +17,7 @@ public class RestExceptionHandler {
 	@ExceptionHandler(AccountNotFoundException.class)
 	@ResponseStatus(value = HttpStatus.NOT_FOUND)
 	public final ResponseEntity<String> handleAccountNotFoundException(Exception e, WebRequest req) {
-		return new ResponseEntity<String>("Account Not Found", HttpStatus.NOT_FOUND);
+		return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(InvalidAccountTypeException.class)
