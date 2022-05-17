@@ -2,6 +2,9 @@ package com.example.groupexercise1.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.example.groupexercise1.model.Account;
+import com.example.groupexercise1.model.dto.AccountDto;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +56,22 @@ public class AccountRepositoryTest {
 	     	.hasSize(3)
 	     	.contains(savedRegAccount, savedCheckAccount, savedInterestAccount);
 	 }
-	 
+
+
+	 @Test
+	 @DisplayName("Should return one account with correct details")
+	 public void getOneAccount(){
+
+		 RegularAccount newAccount = new RegularAccount();
+		 newAccount.setMinimumBalance(500d);
+		 newAccount.setName("Juan Dela Cruz");
+
+		 RegularAccount savedRegularAccount = accountRepository.save(newAccount);
+
+		 Optional<Account> actualAccountDto = accountRepository.findById(savedRegularAccount.getId());
+
+		 assertThat(actualAccountDto.get())
+				 .extracting("id", "name", "minimumBalance")
+				 .containsExactly(savedRegularAccount.getId(),savedRegularAccount.getName(),savedRegularAccount.getMinimumBalance());
+	 }
 }

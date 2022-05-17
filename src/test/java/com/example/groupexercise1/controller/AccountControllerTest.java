@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.groupexercise1.exeption.AccountNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -103,5 +104,42 @@ public class AccountControllerTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("$[2].minimumBalance").value("0.0"));
 				
 		 verify(accountService).getAllAccounts();
+	}
+
+
+	@Test
+	@DisplayName("Should return one account with correct details and http status 200")
+	public void shouldReturnOneAccountsWithCorrectDetails() throws Exception {
+
+		AccountDto regularAcctDto = new AccountDto();
+		regularAcctDto.setId(1L);
+		regularAcctDto.setType("regular");
+		regularAcctDto.setName("Juan Dela Cruz");
+		regularAcctDto.setMinimumBalance(500d);
+
+		when(accountService.getAccount(1L))
+				.thenReturn(regularAcctDto);
+
+		this.mockMvc.perform(get("/accounts/1"))
+				.andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.id").value("1"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.type").value("regular"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Juan Dela Cruz"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.minimumBalance").value("500.0"));
+
+		verify(accountService).getAccount(1L);
+	}
+
+	@Test
+	@DisplayName("Should return http 404 for non-existing account")
+	public void shouldReturnHttp404forNonExistingAccount() throws Exception {
+
+		when(accountService.getAccount(1L))
+				.thenThrow(new AccountNotFoundException());
+
+		this.mockMvc.perform(get("/accounts/1"))
+				.andExpect(status().isNotFound());
+
+		verify(accountService).getAccount(1L);
 	}
 }
