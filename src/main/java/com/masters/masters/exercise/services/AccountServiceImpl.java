@@ -3,10 +3,7 @@ package com.masters.masters.exercise.services;
 import com.masters.masters.exercise.exception.AccountExistException;
 import com.masters.masters.exercise.exception.InvalidTypeException;
 import com.masters.masters.exercise.exception.RecordNotFoundException;
-import com.masters.masters.exercise.model.Account;
-import com.masters.masters.exercise.model.AccountType;
-import com.masters.masters.exercise.model.InterestAccount;
-import com.masters.masters.exercise.model.RegularAccount;
+import com.masters.masters.exercise.model.*;
 import com.masters.masters.exercise.model.dto.AccountDto;
 import com.masters.masters.exercise.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +47,13 @@ public class AccountServiceImpl {
 						result = repo.save(newAccount);
 					}
 				} else if(type.equalsIgnoreCase(AccountType.CHECKING.toString())) {
-					// Update code here for Checking Account
+					if(account.isPresent()) {
+						throw new AccountExistException("The account is already exist");
+					} else {
+						Account newAccount = new CheckingAccount();
+						newAccount.setName(dto.getName());
+						result = repo.save(newAccount);
+					}
 				} else {
 					throw new InvalidTypeException("Invalid Account Type");
 				}

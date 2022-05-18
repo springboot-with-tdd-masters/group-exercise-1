@@ -3,6 +3,9 @@
  */
 package com.masters.masters.exercise.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.masters.masters.exercise.model.InterestAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -36,11 +39,11 @@ public class TransactionController {
 	private TransactionImpl transactionService;
 
 	@PostMapping("/{id}/transactions")
-	public ResponseEntity<Account> transactions(@PathVariable Long id, @RequestBody TransactionDto transaction) throws RecordNotFoundException {
+	public ResponseEntity<Account> transactions(@PathVariable Long id, @RequestBody TransactionDto transaction) throws RecordNotFoundException, JsonProcessingException {
 		Account response = null;
 		Account account = accountService.getAccountById(id);
 		String type = transaction.getType();
-		
+
 		if(type.equalsIgnoreCase(TransactionType.DEPOSIT.toString())) {
 			response = transactionService.deposit(account, transaction.getAmount());
 		} else if(type.equalsIgnoreCase(TransactionType.WITHDRAW.toString())) {

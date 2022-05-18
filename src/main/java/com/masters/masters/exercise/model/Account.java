@@ -34,6 +34,8 @@ public abstract class Account {
     private double interestCharge;
     private double amount;
 
+
+
     public Account() {
         Random rand = new Random();
         long num = (long)(rand.nextDouble() * 10000000000L);
