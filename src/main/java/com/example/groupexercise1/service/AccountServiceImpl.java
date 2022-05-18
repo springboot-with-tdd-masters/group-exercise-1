@@ -1,5 +1,6 @@
 package com.example.groupexercise1.service;
 
+import com.example.groupexercise1.model.CheckingAccount;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,7 +43,20 @@ public class AccountServiceImpl implements AccountService {
 	
 	      Account savedAccount = accountRepository.save(newAccount);
 	      return new AccountDto(savedAccount);
-	    } else {
+
+	    }else if (accountRequest.getType().equals("checking")){
+				Account newAccount = new CheckingAccount();
+				newAccount.setName(accountRequest.getName());
+				newAccount.setMinimumBalance(100d);
+				newAccount.setBalance(newAccount.getMinimumBalance());
+				newAccount.setPenalty(10d);
+				newAccount.setTransactionCharge(1d);
+				newAccount.setInterestCharge(0d);
+				newAccount.setAcctNumber(AccountGenerator.generateAccountNumber());
+
+				Account savedAccount = accountRepository.save(newAccount);
+				return new AccountDto(savedAccount);
+			}else {
 	      throw new InvalidAccountTypeException();
 	    }
 	  }

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,6 +18,7 @@ import com.example.groupexercise1.model.dto.AccountDto;
 import com.example.groupexercise1.model.dto.AccountRequestDto;
 import com.example.groupexercise1.repository.AccountRepository;
 
+import com.example.groupexercise1.util.AccountGenerator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +38,9 @@ public class AccountServiceTest {
 
 	@Mock
 	private AccountRepository accountRepository;
+
+	@Mock
+	private Account accountMock;
 
 	@InjectMocks
 	private AccountServiceImpl accountService;
@@ -73,6 +78,36 @@ public class AccountServiceTest {
 		assertEquals(expectedResponse.getMinimumBalance(), actualResponse.getMinimumBalance());
 		assertEquals(expectedResponse.getType(), actualResponse.getType());
 	}
+
+	@Test
+	@DisplayName("Should save checking account and return correct details")
+	public void shouldSaveCheckingAccountAndReturnDetails() {
+		AccountRequestDto accountRequest = new AccountRequestDto();
+		accountRequest.setName("Juan Dela Cruz");
+		accountRequest.setType("checking");
+
+		Account expectedResponse = new CheckingAccount();
+		expectedResponse.setName("Juan Dela Cruz");
+		expectedResponse.setAcctNumber("123456");
+		expectedResponse.setMinimumBalance(100d);
+		expectedResponse.setBalance(expectedResponse.getMinimumBalance());
+		expectedResponse.setPenalty(10d);
+		expectedResponse.setTransactionCharge(1d);
+		expectedResponse.setInterestCharge(0d);
+
+
+		when(accountRepository.save(any())).thenReturn(expectedResponse);
+
+		AccountDto actualResponse = accountService.createAccount(accountRequest);
+
+		verify(accountRepository).save(any());
+
+		assertEquals(expectedResponse.getName(), actualResponse.getName());
+		assertEquals(expectedResponse.getAcctNumber(), actualResponse.getAcctNumber());
+		assertEquals(expectedResponse.getMinimumBalance(), actualResponse.getMinimumBalance());
+		assertEquals(expectedResponse.getType(), actualResponse.getType());
+	}
+
 
 	@Test
 	@DisplayName("Should return all accounts with correct details")
@@ -367,7 +402,7 @@ public class AccountServiceTest {
 		AccountDto actualResponse = accountService.createTransaction("withdraw", 1L, 100d);
 
 		//transaction charge first
-		double expectedBalance = 89d; //balance gets -100 (withdraw) and -1 (transaction charge)
+		double expectedBalance = 89d; //balance gets -100 (withdraw) and -1 (transaction charge) and -10(penalty)
 
 		verify(accountRepository).findById(1L);
 
