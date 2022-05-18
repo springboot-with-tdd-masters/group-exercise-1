@@ -7,6 +7,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.groupexercise1.exeption.AccountNotFoundException;
+import com.example.groupexercise1.exeption.InvalidAccountTypeException;
+import com.example.groupexercise1.exeption.InvalidTransactionAmountException;
+import com.example.groupexercise1.exeption.InvalidTransactionTypeException;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -67,7 +71,25 @@ public class AccountControllerTest {
 
 		  verify(accountService).createAccount(accountRequest);
 	}
-	 
+	  
+	@Test
+	@DisplayName("Should return Bad Request error when account type is not supported")
+	public void shouldReturnBadRequestForInvalidAccountType() throws Exception {
+		 AccountRequestDto accountRequest = new AccountRequestDto();
+		 accountRequest.setName("Juan Dela Cruz");
+		 accountRequest.setType("xxx");
+
+		 when(accountService.createAccount(accountRequest))
+	         	.thenThrow(new InvalidAccountTypeException());
+			
+		 this.mockMvc.perform(post("/accounts").content(
+		            	objectMapper.writeValueAsString(accountRequest)
+		    		).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest());
+
+		 verify(accountService).createAccount(accountRequest);  
+	}
+	
 	 @Test
 	 @DisplayName("Should return all accounts with correct details and http status 200")
 	 public void shouldReturnAllAccountsWithCorrectDetails() throws Exception {
@@ -174,5 +196,41 @@ public class AccountControllerTest {
 			.andExpect(MockMvcResultMatchers.jsonPath("$.balance").value("600.0"));
 
 		verify(accountService).createTransaction("deposit", 1L, 100d);
+	}
+	
+	@Test
+	@DisplayName("Should return Bad Request error for invalid transaction amount")
+	public void shouldReturnBadRequestForInvalidTransactionAmount() throws Exception {
+		when(accountService.createTransaction("deposit", 1L, -100d))
+				.thenThrow(new InvalidTransactionAmountException());
+			
+		TransactionRequestDto transactRequest = new TransactionRequestDto();
+		transactRequest.setType("deposit");
+		transactRequest.setAmount(-100d);
+
+		this.mockMvc.perform(post("/accounts/1/transactions").content(
+		            	objectMapper.writeValueAsString(transactRequest)
+		    		).contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isBadRequest());
+
+		verify(accountService).createTransaction("deposit", 1L, -100d);
+	}
+	
+	@Test
+	@DisplayName("Should return Bad Request error for invalid transaction type")
+	public void shouldReturnBadRequestForInvalidTransactionType() throws Exception {
+		when(accountService.createTransaction("xxx", 1L, 100d))
+				.thenThrow(new InvalidTransactionTypeException());
+			
+		TransactionRequestDto transactRequest = new TransactionRequestDto();
+		transactRequest.setType("xxx");
+		transactRequest.setAmount(100d);
+
+		this.mockMvc.perform(post("/accounts/1/transactions").content(
+		            	objectMapper.writeValueAsString(transactRequest)
+		    		).contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isBadRequest());
+
+		verify(accountService).createTransaction("xxx", 1L, 100d);
 	}
 }

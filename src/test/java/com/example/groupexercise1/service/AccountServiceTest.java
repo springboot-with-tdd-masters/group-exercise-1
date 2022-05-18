@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.example.groupexercise1.exeption.AccountNotFoundException;
+import com.example.groupexercise1.exeption.InvalidTransactionAmountException;
 
 public class AccountServiceTest {
 
@@ -212,5 +213,21 @@ public class AccountServiceTest {
 		  
 		assertThrows(InvalidTransactionTypeException.class,
 				  ()->accountService.createTransaction("xxx", 1L, 100d));	  
+	}
+	
+	@Test
+	@DisplayName("Should throw InvalidTransactionAmountException when transaction amount is invalid")
+	public void shouldThrowInvalidTransactionAmountExceptionForInvalidAmount() {
+		Account account = new RegularAccount();
+		account.setId(1L);
+		account.setName("Juan Dela Cruz");
+		account.setAcctNumber("123456");
+		account.setMinimumBalance(500d);
+	
+		when(accountRepository.getById(1L))
+		  	.thenReturn(account);
+		  
+		assertThrows(InvalidTransactionAmountException.class,
+				  ()->accountService.createTransaction("deposit", 1L, -100d));	  
 	}
 }

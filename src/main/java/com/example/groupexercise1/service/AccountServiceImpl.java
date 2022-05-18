@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.groupexercise1.exeption.AccountNotFoundException;
 import com.example.groupexercise1.exeption.InvalidAccountTypeException;
+import com.example.groupexercise1.exeption.InvalidTransactionAmountException;
 import com.example.groupexercise1.exeption.InvalidTransactionTypeException;
 import com.example.groupexercise1.model.Account;
 import com.example.groupexercise1.model.RegularAccount;
@@ -71,6 +72,10 @@ public class AccountServiceImpl implements AccountService {
 		  Account account = accountRepository.getById(accountId);
 		  if(account == null) {
 		      throw new AccountNotFoundException("Account not found");
+		  }
+		  
+		  if(amount < 0) {
+			  throw new InvalidTransactionAmountException();
 		  }
 		  
 		  if(type.equals("deposit")) {	
