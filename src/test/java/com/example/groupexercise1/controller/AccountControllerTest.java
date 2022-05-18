@@ -39,7 +39,6 @@ public class AccountControllerTest {
 	 private MockMvc mockMvc;
 	 
 	 @MockBean
-	 @Qualifier("regular")
 	 private AccountService accountService;
 	 
 	 private ObjectMapper objectMapper = new ObjectMapper();
@@ -196,6 +195,38 @@ public class AccountControllerTest {
 			.andExpect(MockMvcResultMatchers.jsonPath("$.balance").value("600.0"));
 
 		verify(accountService).createTransaction("deposit", 1L, 100d);
+	}
+	
+	@Test
+	@DisplayName("Should be able to withdraw from regular account")
+	public void shouldeBeAbleToWithdrawFromRegularAccount() throws Exception {
+
+		AccountDto regularAcctDto = new AccountDto();
+		regularAcctDto.setId(1L);
+		regularAcctDto.setType("regular");
+		regularAcctDto.setName("Juan Dela Cruz");
+		regularAcctDto.setAcctNumber("123456");
+		regularAcctDto.setMinimumBalance(500d);
+		regularAcctDto.setBalance(500d);
+
+		when(accountService.createTransaction("withdraw", 1L, 500d))
+				.thenReturn(regularAcctDto);
+
+		TransactionRequestDto transactRequest = new TransactionRequestDto();
+		transactRequest.setType("withdraw");
+		transactRequest.setAmount(500d);
+		
+		this.mockMvc.perform(post("/accounts/1/transactions").content(
+	            	objectMapper.writeValueAsString(transactRequest)
+	    		).contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(MockMvcResultMatchers.jsonPath("$.type").value("regular"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Juan Dela Cruz"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.acctNumber").value("123456"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.minimumBalance").value("500.0"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.balance").value("500.0"));
+
+		verify(accountService).createTransaction("withdraw", 1L, 500d);
 	}
 	
 	@Test

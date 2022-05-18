@@ -98,7 +98,15 @@ public class AccountServiceImpl implements AccountService {
 	  }
 	  
 	  private void makeWithdraw(Account account, double amount) {
-		  
+		  if(account.getType().equals("regular")) {
+			  account.setBalance(account.getBalance() - amount);
+			  
+			  if(account.getBalance() < account.getMinimumBalance()) {
+				  account.setBalance(account.getBalance() - account.getPenalty());
+			  }
+		  }else {
+			  throw new InvalidAccountTypeException();
+		  } 
 	  }
 
   	 @Override

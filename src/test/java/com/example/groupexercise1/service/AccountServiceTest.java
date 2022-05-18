@@ -165,7 +165,7 @@ public class AccountServiceTest {
 
   
 	@Test
-	@DisplayName("Should be able to deposit to regular account and balance will be updated correctly")
+	@DisplayName("Should be able to deposit to regular account with balance correctly updated")
 	public void shouldeBeAbleToDepositToRegularAccount() {
 		Account account = new RegularAccount();
 		account.setId(1L);
@@ -184,19 +184,65 @@ public class AccountServiceTest {
 		    
 		//expected response
 		AccountDto expectedResponse = new AccountDto();
-		expectedResponse.setType("regular");
-		expectedResponse.setId(1L);
-		expectedResponse.setName("Juan Dela Cruz");
-		expectedResponse.setAcctNumber("123456");
-		expectedResponse.setMinimumBalance(500d);
 		expectedResponse.setBalance(600d); //balance gets increased by 100
-		expectedResponse.setPenalty(10d);
-		expectedResponse.setTransactionCharge(0d);
-		expectedResponse.setInterestCharge(0d);
 		
 		verify(accountRepository).getById(1L);
 			
-		assertEquals(expectedResponse, actualResponse);
+		assertEquals(expectedResponse.getBalance(), actualResponse.getBalance());
+	}
+	
+	@Test
+	@DisplayName("Should be able to withdraw from regular account with no penalty")
+	public void shouldeBeAbleToWithdrawFromRegularAccountWithNoPenalty() {
+		Account account = new RegularAccount();
+		account.setId(1L);
+		account.setName("Juan Dela Cruz");
+		account.setAcctNumber("123456");
+		account.setMinimumBalance(500d);
+		account.setBalance(1000d);
+		account.setPenalty(10d);
+		account.setTransactionCharge(0d);
+		account.setInterestCharge(0d);
+		  
+		when(accountRepository.getById(1L))
+			.thenReturn(account);
+	
+		AccountDto actualResponse = accountService.createTransaction("withdraw", 1L, 500d);
+		    
+		//expected response
+		AccountDto expectedResponse = new AccountDto();
+		expectedResponse.setBalance(500d); //no penalty
+		
+		verify(accountRepository).getById(1L);
+			
+		assertEquals(expectedResponse.getBalance(), actualResponse.getBalance());
+	}
+	
+	@Test
+	@DisplayName("Should be able to withdraw from regular account with penalty")
+	public void shouldeBeAbleToWithdrawFromRegularAccountWithPenalty() {
+		Account account = new RegularAccount();
+		account.setId(1L);
+		account.setName("Juan Dela Cruz");
+		account.setAcctNumber("123456");
+		account.setMinimumBalance(500d);
+		account.setBalance(1000d);
+		account.setPenalty(10d);
+		account.setTransactionCharge(0d);
+		account.setInterestCharge(0d);
+		  
+		when(accountRepository.getById(1L))
+			.thenReturn(account);
+	
+		AccountDto actualResponse = accountService.createTransaction("withdraw", 1L, 600d);
+		    
+		//expected response
+		AccountDto expectedResponse = new AccountDto();
+		expectedResponse.setBalance(390d); //10.00 penalty
+		
+		verify(accountRepository).getById(1L);
+			
+		assertEquals(expectedResponse.getBalance(), actualResponse.getBalance());
 	}
 	  
 	@Test
