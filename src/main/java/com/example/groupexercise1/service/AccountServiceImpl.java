@@ -91,16 +91,20 @@ public class AccountServiceImpl implements AccountService {
 	  private void makeDeposit(Account account, double amount) {
 		  if(account.getType().equals("regular")) {
 			  account.setBalance(account.getBalance() + amount);
+		  }else if (account.getType().equals("checking")){
+				account.setBalance(account.getBalance() + amount - account.getTransactionCharge());
+
+
 		  }else {
-			  throw new InvalidAccountTypeException();
-		  }  
+				throw new InvalidAccountTypeException();
+			}
 	  }
 	  
 	  private void makeWithdraw(Account account, double amount) {
 		  if(account.getBalance() == 0) {
 			  throw new InsufficientBalanceException(); 
 		  }
-		  
+
 		  if(account.getType().equals("regular")) {
 			  account.setBalance(account.getBalance() - amount);
 			  
@@ -109,9 +113,18 @@ public class AccountServiceImpl implements AccountService {
 			  }
 			  
 			  if(account.getBalance() < 0) {
-				  throw new InsufficientBalanceException(); 
+				  throw new InsufficientBalanceException();
 			  }
-		  } else {
+		  }else if (account.getType().equals("checking")){
+				account.setBalance(account.getBalance() - amount - account.getTransactionCharge());
+				if (account.getBalance() < account.getMinimumBalance()){
+					account.setBalance(account.getBalance() - account.getPenalty());
+				}
+				if(account.getBalance() < 0) {
+					throw new InsufficientBalanceException();
+				}
+
+			} else {
 			  throw new InvalidAccountTypeException();
 		  } 
 	  }

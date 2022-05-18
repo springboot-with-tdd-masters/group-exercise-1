@@ -295,4 +295,83 @@ public class AccountServiceTest {
 		assertThrows(InvalidTransactionAmountException.class,
 				  ()->accountService.createTransaction("deposit", 1L, -100d));	  
 	}
+
+	@Test
+	@DisplayName("Should be able to deposit to checking account and balance will be updated correctly")
+	public void shouldeBeAbleToDepositToCheckingAccount() {
+		Account account = new CheckingAccount();
+		account.setId(1L);
+		account.setName("Juan Dela Cruz");
+		account.setAcctNumber("123456");
+		account.setMinimumBalance(100d);
+		account.setBalance(100d);
+		account.setPenalty(10d);
+		account.setTransactionCharge(1d);
+		account.setInterestCharge(0d);
+
+		when(accountRepository.findById(1L))
+				.thenReturn(Optional.of(account));
+
+		AccountDto actualResponse = accountService.createTransaction("deposit", 1L, 100d);
+
+		double expectedBalance = 199d; //balance gets +100 for deposit and -1 for transaction charge
+
+		verify(accountRepository).findById(1L);
+
+		assertEquals(actualResponse.getBalance(),expectedBalance);
+	}
+
+	@Test
+	@DisplayName("Should be able to withdraw to checking account and balance will be updated correctly with no penalty")
+	public void shouldeBeAbleToWithdrawToCheckingAccountNoPenalty() {
+
+		Account account = new CheckingAccount();
+		account.setId(1L);
+		account.setName("Juan Dela Cruz");
+		account.setAcctNumber("123456");
+		account.setMinimumBalance(100d);
+		account.setBalance(500d);
+		account.setPenalty(10d);
+		account.setTransactionCharge(1d);
+		account.setInterestCharge(0d);
+
+		when(accountRepository.findById(1L))
+				.thenReturn(Optional.of(account));
+
+		AccountDto actualResponse = accountService.createTransaction("withdraw", 1L, 100d);
+
+		double expectedBalance = 399d; //balance gets -100 (withdraw) and -1 (transaction charge)
+
+		verify(accountRepository).findById(1L);
+
+		assertEquals(actualResponse.getBalance(),expectedBalance);
+	}
+
+	@Test
+	@DisplayName("Should be able to withdraw to checking account and balance will be updated correctly with penalty")
+	public void shouldeBeAbleToWithdrawToCheckingAccountWithPenalty() {
+
+		Account account = new CheckingAccount();
+		account.setId(1L);
+		account.setName("Juan Dela Cruz");
+		account.setAcctNumber("123456");
+		account.setMinimumBalance(100d);
+		account.setBalance(200d);
+		account.setPenalty(10d);
+		account.setTransactionCharge(1d);
+		account.setInterestCharge(0d);
+
+		when(accountRepository.findById(1L))
+				.thenReturn(Optional.of(account));
+
+		AccountDto actualResponse = accountService.createTransaction("withdraw", 1L, 100d);
+
+		//transaction charge first
+		double expectedBalance = 89d; //balance gets -100 (withdraw) and -1 (transaction charge)
+
+		verify(accountRepository).findById(1L);
+
+		assertEquals(actualResponse.getBalance(),expectedBalance);
+
+	}
 }
