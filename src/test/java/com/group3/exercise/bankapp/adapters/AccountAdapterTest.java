@@ -4,7 +4,7 @@ package com.group3.exercise.bankapp.adapters;
 import com.group3.exercise.bankapp.entities.Account;
 import com.group3.exercise.bankapp.entities.InterestAccount;
 import com.group3.exercise.bankapp.exceptions.AccountTransactionException;
-import com.group3.exercise.bankapp.request.TransactionResponse;
+import com.group3.exercise.bankapp.response.AccountResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,8 +33,9 @@ public class AccountAdapterTest {
         account.setId(1L);
         account.setPenalty(0.0);
         account.setAcctNumber("123456789");
+        account.setName("JOAN DOE");
         // when
-        TransactionResponse actual = adapter.mapToResponse(account);
+        AccountResponse actual = adapter.mapToResponse(account);
         // then
         assertEquals(100.0, actual.getBalance());
         assertEquals(0.0, actual.getMinimumBalance());
@@ -43,6 +44,7 @@ public class AccountAdapterTest {
         assertEquals(1L, actual.getId());
         assertEquals(0.0, actual.getPenalty());
         assertEquals("123456789", account.getAcctNumber());
+        assertEquals("JOAN DOE", account.getName());
     }
 
     @Test

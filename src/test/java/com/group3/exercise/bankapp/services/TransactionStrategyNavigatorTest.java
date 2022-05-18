@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -36,9 +37,10 @@ public class TransactionStrategyNavigatorTest {
         // given
         when(interestTxnService.generateNewAccountDetails(anyString(), anyString())).thenReturn(new InterestAccount());
         // when
-        navigator.generateNewAccountDetails("JOHN DOE", "987654321", "interest");
+        Account account = navigator.generateNewAccountDetails("JOHN DOE", "987654321", "interest");
         // then
         verify(interestTxnService, times(1)).generateNewAccountDetails("JOHN DOE", "987654321");
+        assertEquals("interest",account.getType());
     }
 
     @Test

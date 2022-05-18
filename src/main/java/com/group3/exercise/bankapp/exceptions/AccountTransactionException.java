@@ -7,7 +7,7 @@ public class AccountTransactionException extends RuntimeException {
     private final String errorMsg;
     private final HttpStatus httpStatus;
 
-    public AccountTransactionException(String errorMsg){
+    public AccountTransactionException(HttpStatus status, String errorMsg){
         super();
         this.errorMsg = errorMsg;
         this.httpStatus = HttpStatus.BAD_REQUEST;
@@ -20,5 +20,9 @@ public class AccountTransactionException extends RuntimeException {
     }
     public String getErrorMsg() {
         return errorMsg;
+    }
+
+    public HttpStatus getHttpStatus() {
+        return httpStatus;
     }
 }

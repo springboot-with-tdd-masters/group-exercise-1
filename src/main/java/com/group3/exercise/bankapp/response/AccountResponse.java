@@ -1,6 +1,6 @@
-package com.group3.exercise.bankapp.request;
+package com.group3.exercise.bankapp.response;
 
-public class TransactionResponse {
+public class AccountResponse {
     private Long id;
     private String name;
     private String acctNumber;
