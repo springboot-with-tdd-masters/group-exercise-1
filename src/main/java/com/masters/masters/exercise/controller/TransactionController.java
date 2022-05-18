@@ -39,7 +39,7 @@ public class TransactionController {
 	public ResponseEntity<Account> transactions(@PathVariable Long id, @RequestBody TransactionDto transaction) throws RecordNotFoundException {
 		Account response = null;
 		Account account = accountService.getAccountById(id);
-		String type = transaction.getTransactionType();
+		String type = transaction.getType();
 		
 		if(type.equalsIgnoreCase(TransactionType.DEPOSIT.toString())) {
 			response = transactionService.deposit(account, transaction.getAmount());

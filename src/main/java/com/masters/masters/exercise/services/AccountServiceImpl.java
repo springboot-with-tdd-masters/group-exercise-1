@@ -6,6 +6,7 @@ import com.masters.masters.exercise.exception.RecordNotFoundException;
 import com.masters.masters.exercise.model.Account;
 import com.masters.masters.exercise.model.AccountType;
 import com.masters.masters.exercise.model.InterestAccount;
+import com.masters.masters.exercise.model.RegularAccount;
 import com.masters.masters.exercise.model.dto.AccountDto;
 import com.masters.masters.exercise.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +34,12 @@ public class AccountServiceImpl {
 
 				if(type.equalsIgnoreCase(AccountType.REGULAR.toString())) {
 					if(account.isPresent()) {
-						Account newEntity = account.get();
-						newEntity.setName(account.get().getName());
-						newEntity.setBalance(account.get().getBalance());
+						throw new AccountExistException("The account is already exist");
+					} else {
+						Account newEntity = new RegularAccount();
+						newEntity.setName(dto.getName());
 						newEntity = repo.save(newEntity);
 						result = newEntity;
-					} else {
-						// Update code here since the request has been changed
 					}
 				} else if(type.equalsIgnoreCase(AccountType.INTEREST.toString())) {
 					if(account.isPresent()) {

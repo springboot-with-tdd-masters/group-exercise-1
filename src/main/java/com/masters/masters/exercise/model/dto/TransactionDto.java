@@ -9,22 +9,22 @@ package com.masters.masters.exercise.model.dto;
  */
 public class TransactionDto {
 
-	private String transactionType;
+	private String type;
 	
 	private double amount;
 
 	/**
 	 * @return the transactionType
 	 */
-	public String getTransactionType() {
-		return transactionType;
+	public String getType() {
+		return type;
 	}
 
 	/**
-	 * @param transactionType the transactionType to set
+	 * @param type the transactionType to set
 	 */
-	public void setTransactionType(String transactionType) {
-		this.transactionType = transactionType;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	/**
