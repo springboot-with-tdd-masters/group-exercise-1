@@ -1,5 +1,6 @@
 package com.softvision.bank.tdd.services;
 
+import com.softvision.bank.tdd.exceptions.BadRequestException;
 import com.softvision.bank.tdd.exceptions.InsufficientFundsAvailable;
 import com.softvision.bank.tdd.exceptions.RecordNotFoundException;
 import com.softvision.bank.tdd.model.*;
@@ -20,8 +21,12 @@ public class TransactionServiceImpl implements TransactionService {
 
 	public Account transact(long id, Transaction transaction) {
 		Account account = accountRepository.findById(id).orElseThrow(RecordNotFoundException::new);
+		
+		if(transaction.getAmount() <= 0)
+			throw new BadRequestException();
+		
 		switch (ofNullable(transaction).map(Transaction::getType).map(String::toUpperCase)
-				.orElseThrow(IllegalArgumentException::new)) {
+				.orElseThrow(BadRequestException::new)) {
 		case "DEPOSIT":
 			account.setBalance(Double.sum(account.getBalance(), transaction.getAmount()));
 			break;
@@ -33,7 +38,7 @@ public class TransactionServiceImpl implements TransactionService {
 			account.setBalance(diff);
 			break;
 		default:
-			throw new IllegalArgumentException();
+			throw new BadRequestException();
 		}
 		computeCharges(account);
 		return accountRepository.save(account);

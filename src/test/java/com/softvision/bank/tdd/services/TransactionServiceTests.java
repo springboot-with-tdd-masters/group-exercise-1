@@ -1,5 +1,6 @@
 package com.softvision.bank.tdd.services;
 
+import com.softvision.bank.tdd.exceptions.BadRequestException;
 import com.softvision.bank.tdd.exceptions.RecordNotFoundException;
 import com.softvision.bank.tdd.model.Account;
 import com.softvision.bank.tdd.model.Transaction;
@@ -128,14 +129,14 @@ public class TransactionServiceTests {
     }
 
     @Test
-    @DisplayName("Account - Should throw IllegalArgumentException on bad request/parameters")
-    void test_transaction_fail_throwException_IllegalArgumentException() {
+    @DisplayName("Account - Should throw BadRequestException on bad request/parameters")
+    void test_transaction_fail_throwException_BadRequestException() {
         Account mockedCheckingAccount = getMockCheckingAccount();
         when(mockedAccountRepository.findById(CHK_MOCK_ACCT_ID)).thenReturn(Optional.of(mockedCheckingAccount));
 
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(BadRequestException.class, () ->
                 transactionService.transact(CHK_MOCK_ACCT_ID, new Transaction("garbage transaction", 100)));
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(BadRequestException.class, () ->
                 transactionService.transact(CHK_MOCK_ACCT_ID, new Transaction(null, 100)));
     }
 }

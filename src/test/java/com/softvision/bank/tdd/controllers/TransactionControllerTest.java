@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softvision.bank.tdd.AccountMocks;
+import com.softvision.bank.tdd.exceptions.BadRequestException;
 import com.softvision.bank.tdd.model.Transaction;
 import com.softvision.bank.tdd.repository.AccountRepository;
 import com.softvision.bank.tdd.services.BankAccountsService;
@@ -82,6 +83,15 @@ class TransactionControllerTest {
 					.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 					.andExpect(jsonPath("type").value("interest"))
 					.andExpect(jsonPath("balance").value(AccountMocks.INT_MOCK_BALANCE));
+		}
+		
+		@Test
+		@DisplayName("Should throw BadRequestException")
+		void test_throw_BadRequestException() throws Exception {
+
+			when(trasactionService.transact(anyLong(), any())).thenThrow(BadRequestException.class);
+			mockMvc.perform(post("/accounts/1/transactions").contentType(MediaType.APPLICATION_JSON))
+					.andExpect(status().isBadRequest());
 		}
 	}	
 	
