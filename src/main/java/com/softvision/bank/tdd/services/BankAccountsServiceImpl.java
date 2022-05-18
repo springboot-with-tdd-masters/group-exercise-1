@@ -2,6 +2,7 @@ package com.softvision.bank.tdd.services;
 
 import com.softvision.bank.tdd.model.Account;
 import com.softvision.bank.tdd.model.CheckingAccount;
+import com.softvision.bank.tdd.model.InterestAccount;
 import com.softvision.bank.tdd.exceptions.RecordNotFoundException;
 import com.softvision.bank.tdd.model.RegularAccount;
 import com.softvision.bank.tdd.repository.AccountRepository;
@@ -46,6 +47,8 @@ public class BankAccountsServiceImpl implements BankAccountsService {
 			account.setTransactionCharge(1);
 			account.setPenalty(10);
 			account.setBalance(100);
+		} else if (account instanceof InterestAccount) {
+			account.setInterestCharge(0.03);
 		}
 
 		account = repository.save(account);

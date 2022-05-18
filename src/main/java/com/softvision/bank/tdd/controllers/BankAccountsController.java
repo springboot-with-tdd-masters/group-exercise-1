@@ -37,12 +37,12 @@ public class BankAccountsController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Object> deleteById(@PathVariable("id") long id) {
 		bankAccountsService.deleteById(id);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.noContent().build();
 	}
 
 	@PostMapping
 	public ResponseEntity<Account> createUpdate(@RequestBody Account account) {
 		account = bankAccountsService.createUpdate(account);
-		return new ResponseEntity<Account>(account, new HttpHeaders(), HttpStatus.OK);
+		return new ResponseEntity<Account>(account, new HttpHeaders(), HttpStatus.CREATED);
 	}
 }

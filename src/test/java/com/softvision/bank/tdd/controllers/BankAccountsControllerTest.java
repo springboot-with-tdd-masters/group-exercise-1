@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -24,7 +23,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softvision.bank.tdd.AccountMocks;
@@ -33,6 +31,7 @@ import com.softvision.bank.tdd.exceptions.RecordNotFoundException;
 import com.softvision.bank.tdd.model.Account;
 import com.softvision.bank.tdd.model.RegularAccount;
 import com.softvision.bank.tdd.services.BankAccountsService;
+import com.softvision.bank.tdd.services.TransactionService;
 
 @WebMvcTest
 @ExtendWith(MockitoExtension.class)
@@ -43,6 +42,9 @@ class BankAccountsControllerTest {
 
 	@MockBean
 	private BankAccountsService bankAccountsService;
+	
+	@MockBean
+	private TransactionService trasactionService;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -77,6 +79,17 @@ class BankAccountsControllerTest {
 					.andExpect(jsonPath("penalty").value(AccountMocks.CHK_PENALTY))
 					.andExpect(jsonPath("transactionCharge").value(AccountMocks.CHK_CHARGE))
 					.andExpect(jsonPath("interestCharge").value(AccountMocks.CHK_MOCK_INTEREST));
+		}
+		
+		@Test
+		@DisplayName("Should get Interest Account by Id")
+		void test_interest_getById() throws Exception {
+			when(bankAccountsService.get(anyLong())).thenReturn(AccountMocks.getMockInterestAccount());
+
+			mockMvc.perform(get("/accounts/0").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+					.andExpect(jsonPath("acctNumber").value(AccountMocks.INT_MOCK_ACCT_NO))
+					.andExpect(jsonPath("balance").value(AccountMocks.INT_MOCK_BALANCE))
+					.andExpect(jsonPath("interestCharge").value(AccountMocks.INT_INTEREST));
 		}
 
 		@Test
@@ -147,7 +160,7 @@ class BankAccountsControllerTest {
 			mockMvc.perform(
 					post("/accounts").content(objectMapper.writeValueAsString(AccountMocks.getMockRegularAccount()))
 							.contentType(MediaType.APPLICATION_JSON))
-					.andExpect(status().isOk()).andExpect(jsonPath("type").value("regular"))
+					.andExpect(status().isCreated()).andExpect(jsonPath("type").value("regular"))
 					.andExpect(jsonPath("name").value(AccountMocks.NAME))
 					.andExpect(jsonPath("acctNumber").value(AccountMocks.REG_MOCK_ACCT_NO))
 					.andExpect(jsonPath("balance").value(AccountMocks.REG_MOCK_BALANCE))
@@ -167,7 +180,7 @@ class BankAccountsControllerTest {
 			mockMvc.perform(
 					post("/accounts").content(objectMapper.writeValueAsString(AccountMocks.getMockRegularAccount()))
 							.contentType(MediaType.APPLICATION_JSON))
-					.andExpect(status().isOk()).andExpect(jsonPath("type").value("checking"))
+					.andExpect(status().isCreated()).andExpect(jsonPath("type").value("checking"))
 					.andExpect(jsonPath("name").value(AccountMocks.NAME))
 					.andExpect(jsonPath("acctNumber").value(AccountMocks.CHK_MOCK_ACCT_NO))
 					.andExpect(jsonPath("balance").value(AccountMocks.CHK_MOCK_BALANCE))
@@ -175,6 +188,22 @@ class BankAccountsControllerTest {
 					.andExpect(jsonPath("penalty").value(AccountMocks.CHK_PENALTY))
 					.andExpect(jsonPath("transactionCharge").value(AccountMocks.CHK_CHARGE))
 					.andExpect(jsonPath("interestCharge").value(AccountMocks.CHK_MOCK_INTEREST));
+
+		}
+		
+		@Test
+		@DisplayName("Should create interest account")
+		void test_create_interest_account() throws Exception {
+
+			when(bankAccountsService.createUpdate(any())).thenReturn(AccountMocks.getMockInterestAccount());
+
+			mockMvc.perform(
+					post("/accounts").content(objectMapper.writeValueAsString(AccountMocks.getMockInterestAccount()))
+							.contentType(MediaType.APPLICATION_JSON))
+					.andExpect(status().isCreated()).andExpect(jsonPath("type").value("interest"))
+					.andExpect(jsonPath("acctNumber").value(AccountMocks.INT_MOCK_ACCT_NO))
+					.andExpect(jsonPath("balance").value(AccountMocks.INT_MOCK_BALANCE))
+					.andExpect(jsonPath("interestCharge").value(AccountMocks.INT_INTEREST));
 
 		}
 
