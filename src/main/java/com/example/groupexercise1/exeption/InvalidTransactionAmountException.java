@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class InvalidTransactionAmountException extends RuntimeException {
 
 	public InvalidTransactionAmountException() {
-		super();
+		super("Invalid Transaction Amount");
 	}
 }

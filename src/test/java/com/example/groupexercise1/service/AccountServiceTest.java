@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.example.groupexercise1.exeption.AccountNotFoundException;
+import com.example.groupexercise1.exeption.InsufficientBalanceException;
 import com.example.groupexercise1.exeption.InvalidTransactionAmountException;
 
 public class AccountServiceTest {
@@ -243,6 +244,24 @@ public class AccountServiceTest {
 		verify(accountRepository).findById(1L);
 			
 		assertEquals(expectedResponse.getBalance(), actualResponse.getBalance());
+	}
+	
+	@Test
+	@DisplayName("Should throw InsufficientBalanceException when balance becomes negative")
+	public void shouldThrowInsufficientBalanceExceptionWhenBalanceIsNegative() {
+		Account account = new RegularAccount();
+		account.setId(1L);
+		account.setName("Juan Dela Cruz");
+		account.setAcctNumber("123456");
+		account.setMinimumBalance(500d);
+		account.setBalance(50d);
+		account.setPenalty(10d);
+	
+		when(accountRepository.findById(1L))
+		  	.thenReturn(Optional.of(account));
+		  
+		assertThrows(InsufficientBalanceException.class,
+				  ()->accountService.createTransaction("withdraw", 1L, 100d));	  
 	}
 	  
 	@Test

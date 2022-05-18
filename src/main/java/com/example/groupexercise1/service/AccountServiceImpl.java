@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.groupexercise1.exeption.AccountNotFoundException;
+import com.example.groupexercise1.exeption.InsufficientBalanceException;
 import com.example.groupexercise1.exeption.InvalidAccountTypeException;
 import com.example.groupexercise1.exeption.InvalidTransactionAmountException;
 import com.example.groupexercise1.exeption.InvalidTransactionTypeException;
@@ -96,13 +97,21 @@ public class AccountServiceImpl implements AccountService {
 	  }
 	  
 	  private void makeWithdraw(Account account, double amount) {
+		  if(account.getBalance() == 0) {
+			  throw new InsufficientBalanceException(); 
+		  }
+		  
 		  if(account.getType().equals("regular")) {
 			  account.setBalance(account.getBalance() - amount);
 			  
 			  if(account.getBalance() < account.getMinimumBalance()) {
 				  account.setBalance(account.getBalance() - account.getPenalty());
 			  }
-		  }else {
+			  
+			  if(account.getBalance() < 0) {
+				  throw new InsufficientBalanceException(); 
+			  }
+		  } else {
 			  throw new InvalidAccountTypeException();
 		  } 
 	  }

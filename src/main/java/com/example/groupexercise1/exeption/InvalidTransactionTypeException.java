@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class InvalidTransactionTypeException extends RuntimeException {
 
 	public InvalidTransactionTypeException() {
-		super();
+		super("Invalid Transaction Type");
 	}
 }
