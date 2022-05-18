@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.example.groupexercise1.model.dto.AccountDto;
 import com.example.groupexercise1.model.dto.AccountRequestDto;
+import com.example.groupexercise1.model.dto.TransactionRequestDto;
 import com.example.groupexercise1.service.AccountService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -135,11 +136,43 @@ public class AccountControllerTest {
 	public void shouldReturnHttp404forNonExistingAccount() throws Exception {
 
 		when(accountService.getAccount(1L))
-				.thenThrow(new AccountNotFoundException());
+				.thenThrow(new AccountNotFoundException("Account not found"));
 
 		this.mockMvc.perform(get("/accounts/1"))
 				.andExpect(status().isNotFound());
 
 		verify(accountService).getAccount(1L);
+	}
+		
+	@Test
+	@DisplayName("Should be able to deposit to regular account")
+	public void shouldeBeAbleToDepositToRegularAccount() throws Exception {
+
+		AccountDto regularAcctDto = new AccountDto();
+		regularAcctDto.setId(1L);
+		regularAcctDto.setType("regular");
+		regularAcctDto.setName("Juan Dela Cruz");
+		regularAcctDto.setAcctNumber("123456");
+		regularAcctDto.setMinimumBalance(500d);
+		regularAcctDto.setBalance(600d);
+
+		when(accountService.createTransaction("deposit", 1L, 100d))
+				.thenReturn(regularAcctDto);
+
+		TransactionRequestDto transactRequest = new TransactionRequestDto();
+		transactRequest.setType("deposit");
+		transactRequest.setAmount(100d);
+		
+		this.mockMvc.perform(post("/accounts/1/transactions").content(
+	            	objectMapper.writeValueAsString(transactRequest)
+	    		).contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(MockMvcResultMatchers.jsonPath("$.type").value("regular"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Juan Dela Cruz"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.acctNumber").value("123456"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.minimumBalance").value("500.0"))
+			.andExpect(MockMvcResultMatchers.jsonPath("$.balance").value("600.0"));
+
+		verify(accountService).createTransaction("deposit", 1L, 100d);
 	}
 }

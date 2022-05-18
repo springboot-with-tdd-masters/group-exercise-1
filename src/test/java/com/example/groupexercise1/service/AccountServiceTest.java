@@ -8,6 +8,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.example.groupexercise1.exeption.InvalidTransactionTypeException;
+import com.example.groupexercise1.model.Account;
+import com.example.groupexercise1.model.CheckingAccount;
+import com.example.groupexercise1.model.InterestAccount;
+import com.example.groupexercise1.model.RegularAccount;
+import com.example.groupexercise1.model.dto.AccountDto;
+import com.example.groupexercise1.model.dto.AccountRequestDto;
+import com.example.groupexercise1.repository.AccountRepository;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -20,13 +29,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.example.groupexercise1.exeption.AccountNotFoundException;
-import com.example.groupexercise1.model.Account;
-import com.example.groupexercise1.model.CheckingAccount;
-import com.example.groupexercise1.model.InterestAccount;
-import com.example.groupexercise1.model.RegularAccount;
-import com.example.groupexercise1.model.dto.AccountDto;
-import com.example.groupexercise1.model.dto.AccountRequestDto;
-import com.example.groupexercise1.repository.AccountRepository;
 
 public class AccountServiceTest {
 
@@ -112,6 +114,30 @@ public class AccountServiceTest {
 		assertThat(accountDtos).hasSize(3);
 		assertThat(accountDtos).containsExactlyInAnyOrder(regularAcctDto, checkingAcctDto, interestAcctDto);
 	}
+	
+	@Test
+	@DisplayName("Should return one account with correct details")
+	public void shouldReturnOneAccountsWithCorrectDetails() {
+
+	    Account expectedResponse = new RegularAccount();
+	    expectedResponse.setId(1L);
+	    expectedResponse.setName("Juan Dela Cruz");
+	    expectedResponse.setAcctNumber("123456");
+	    expectedResponse.setMinimumBalance(500d);
+
+	    when(accountRepository.findById(1L))
+	        .thenReturn(Optional.of(expectedResponse));
+
+	    AccountDto actualResponse = accountService.getAccount(1L);
+
+	    verify(accountRepository).findById(1L);
+
+	    assertThat(actualResponse)
+	        .extracting("id", "name", "minimumBalance", "type", "acctNumber")
+	        .containsExactly(expectedResponse.getId(), expectedResponse.getName(),
+	            expectedResponse.getMinimumBalance(), expectedResponse.getType(),
+	            expectedResponse.getAcctNumber());
+	}
 
 	@Test
 	@DisplayName("Should delete account")
@@ -136,4 +162,55 @@ public class AccountServiceTest {
 		assertThrows(AccountNotFoundException.class, () -> accountService.deleteAccount(0L));
 	}
 
+  
+	@Test
+	@DisplayName("Should be able to deposit to regular account and balance will be updated correctly")
+	public void shouldeBeAbleToDepositToRegularAccount() {
+		Account account = new RegularAccount();
+		account.setId(1L);
+		account.setName("Juan Dela Cruz");
+		account.setAcctNumber("123456");
+		account.setMinimumBalance(500d);
+		account.setBalance(500d);
+		account.setPenalty(10d);
+		account.setTransactionCharge(0d);
+		account.setInterestCharge(0d);
+		  
+		when(accountRepository.getById(1L))
+			.thenReturn(account);
+	
+		AccountDto actualResponse = accountService.createTransaction("deposit", 1L, 100d);
+		    
+		//expected response
+		AccountDto expectedResponse = new AccountDto();
+		expectedResponse.setType("regular");
+		expectedResponse.setId(1L);
+		expectedResponse.setName("Juan Dela Cruz");
+		expectedResponse.setAcctNumber("123456");
+		expectedResponse.setMinimumBalance(500d);
+		expectedResponse.setBalance(600d); //balance gets increased by 100
+		expectedResponse.setPenalty(10d);
+		expectedResponse.setTransactionCharge(0d);
+		expectedResponse.setInterestCharge(0d);
+		
+		verify(accountRepository).getById(1L);
+			
+		assertEquals(expectedResponse, actualResponse);
+	}
+	  
+	@Test
+	@DisplayName("Should throw InvalidTransactionTypeException when transaction type is not supported")
+	public void shouldThrowInvalidTransactionTypeExceptionForInvalidActionType() {
+		Account account = new RegularAccount();
+		account.setId(1L);
+		account.setName("Juan Dela Cruz");
+		account.setAcctNumber("123456");
+		account.setMinimumBalance(500d);
+	
+		when(accountRepository.getById(1L))
+		  	.thenReturn(account);
+		  
+		assertThrows(InvalidTransactionTypeException.class,
+				  ()->accountService.createTransaction("xxx", 1L, 100d));	  
+	}
 }

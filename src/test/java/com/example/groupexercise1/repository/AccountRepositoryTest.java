@@ -57,7 +57,6 @@ public class AccountRepositoryTest {
 	     	.contains(savedRegAccount, savedCheckAccount, savedInterestAccount);
 	 }
 
-
 	 @Test
 	 @DisplayName("Should return one account with correct details")
 	 public void getOneAccount(){
@@ -73,5 +72,21 @@ public class AccountRepositoryTest {
 		 assertThat(actualAccountDto.get())
 				 .extracting("id", "name", "minimumBalance")
 				 .containsExactly(savedRegularAccount.getId(),savedRegularAccount.getName(),savedRegularAccount.getMinimumBalance());
+	 }		 
+	 
+	 @Test
+	 @DisplayName("Should be able to deposit on regular account")
+	 public void shouldeBeAbleToDepositOnRegularAccount() {
+	     RegularAccount newAccount = new RegularAccount();
+	     newAccount.setMinimumBalance(500d);
+	     
+	     RegularAccount actualResponse = accountRepository.save(newAccount);
+	     
+	     Double depositAmt = 100d;
+	     actualResponse.setBalance(actualResponse.getMinimumBalance() + depositAmt);
+	     
+	     RegularAccount updatedResponse = accountRepository.save(newAccount);
+
+	     assertThat(updatedResponse.getBalance()).isEqualTo(actualResponse.getBalance());
 	 }
 }
