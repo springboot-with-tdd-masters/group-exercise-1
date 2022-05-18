@@ -4,21 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.groupexercise1.exeption.InvalidTransactionTypeException;
-import com.example.groupexercise1.model.Account;
-import com.example.groupexercise1.model.CheckingAccount;
-import com.example.groupexercise1.model.InterestAccount;
-import com.example.groupexercise1.model.RegularAccount;
-import com.example.groupexercise1.model.dto.AccountDto;
-import com.example.groupexercise1.model.dto.AccountRequestDto;
-import com.example.groupexercise1.repository.AccountRepository;
-
-import com.example.groupexercise1.util.AccountGenerator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +22,14 @@ import org.mockito.MockitoAnnotations;
 import com.example.groupexercise1.exeption.AccountNotFoundException;
 import com.example.groupexercise1.exeption.InsufficientBalanceException;
 import com.example.groupexercise1.exeption.InvalidTransactionAmountException;
+import com.example.groupexercise1.exeption.InvalidTransactionTypeException;
+import com.example.groupexercise1.model.Account;
+import com.example.groupexercise1.model.CheckingAccount;
+import com.example.groupexercise1.model.InterestAccount;
+import com.example.groupexercise1.model.RegularAccount;
+import com.example.groupexercise1.model.dto.AccountDto;
+import com.example.groupexercise1.model.dto.AccountRequestDto;
+import com.example.groupexercise1.repository.AccountRepository;
 
 public class AccountServiceTest {
 

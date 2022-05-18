@@ -1,5 +1,6 @@
 package com.example.groupexercise1.model;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -9,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -36,6 +38,8 @@ public abstract class Account {
 	private Double penalty;
 	private Double transactionCharge;
 	private Double interestCharge;
+	@JsonIgnore
+	private LocalDate createdDate;
 	
 	public Long getId() {
 		return id;
@@ -101,6 +105,14 @@ public abstract class Account {
 		this.interestCharge = interestCharge;
 	}
 	
+	public LocalDate getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(LocalDate createdDate) {
+		this.createdDate = createdDate;
+	}
+
 	public abstract String getType();
 
 	@Override

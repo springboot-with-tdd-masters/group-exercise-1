@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.groupexercise1.model.Account;
 import com.example.groupexercise1.model.dto.AccountDto;
 import com.example.groupexercise1.model.dto.AccountRequestDto;
 import com.example.groupexercise1.model.dto.TransactionRequestDto;
@@ -46,8 +45,8 @@ public class AccountController {
 		return accountService.createTransaction(transactRequest.getType(), id, transactRequest.getAmount());
 	}	
 	
-	@DeleteMapping
-	public void deleteAccount(long id) {
+	@DeleteMapping("/{id}")
+	public void deleteAccount(@PathVariable long id) {
 		accountService.deleteAccount(id);
 	}
 	
