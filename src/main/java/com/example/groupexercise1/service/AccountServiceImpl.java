@@ -69,10 +69,8 @@ public class AccountServiceImpl implements AccountService {
 	  
 	  @Override
 	  public AccountDto createTransaction(String type, long accountId, double amount) {
-		  Account account = accountRepository.getById(accountId);
-		  if(account == null) {
-		      throw new AccountNotFoundException("Account not found");
-		  }
+		  Account account = accountRepository.findById(accountId)
+				  .orElseThrow(AccountNotFoundException::new);
 		  
 		  if(amount < 0) {
 			  throw new InvalidTransactionAmountException();

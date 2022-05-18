@@ -177,8 +177,8 @@ public class AccountServiceTest {
 		account.setTransactionCharge(0d);
 		account.setInterestCharge(0d);
 		  
-		when(accountRepository.getById(1L))
-			.thenReturn(account);
+		when(accountRepository.findById(1L))
+			.thenReturn(Optional.of(account));
 	
 		AccountDto actualResponse = accountService.createTransaction("deposit", 1L, 100d);
 		    
@@ -186,7 +186,7 @@ public class AccountServiceTest {
 		AccountDto expectedResponse = new AccountDto();
 		expectedResponse.setBalance(600d); //balance gets increased by 100
 		
-		verify(accountRepository).getById(1L);
+		verify(accountRepository).findById(1L);
 			
 		assertEquals(expectedResponse.getBalance(), actualResponse.getBalance());
 	}
@@ -204,8 +204,8 @@ public class AccountServiceTest {
 		account.setTransactionCharge(0d);
 		account.setInterestCharge(0d);
 		  
-		when(accountRepository.getById(1L))
-			.thenReturn(account);
+		when(accountRepository.findById(1L))
+			.thenReturn(Optional.of(account));
 	
 		AccountDto actualResponse = accountService.createTransaction("withdraw", 1L, 500d);
 		    
@@ -213,7 +213,7 @@ public class AccountServiceTest {
 		AccountDto expectedResponse = new AccountDto();
 		expectedResponse.setBalance(500d); //no penalty
 		
-		verify(accountRepository).getById(1L);
+		verify(accountRepository).findById(1L);
 			
 		assertEquals(expectedResponse.getBalance(), actualResponse.getBalance());
 	}
@@ -231,8 +231,8 @@ public class AccountServiceTest {
 		account.setTransactionCharge(0d);
 		account.setInterestCharge(0d);
 		  
-		when(accountRepository.getById(1L))
-			.thenReturn(account);
+		when(accountRepository.findById(1L))
+			.thenReturn(Optional.of(account));
 	
 		AccountDto actualResponse = accountService.createTransaction("withdraw", 1L, 600d);
 		    
@@ -240,7 +240,7 @@ public class AccountServiceTest {
 		AccountDto expectedResponse = new AccountDto();
 		expectedResponse.setBalance(390d); //10.00 penalty
 		
-		verify(accountRepository).getById(1L);
+		verify(accountRepository).findById(1L);
 			
 		assertEquals(expectedResponse.getBalance(), actualResponse.getBalance());
 	}
@@ -254,8 +254,8 @@ public class AccountServiceTest {
 		account.setAcctNumber("123456");
 		account.setMinimumBalance(500d);
 	
-		when(accountRepository.getById(1L))
-		  	.thenReturn(account);
+		when(accountRepository.findById(1L))
+		  	.thenReturn(Optional.of(account));
 		  
 		assertThrows(InvalidTransactionTypeException.class,
 				  ()->accountService.createTransaction("xxx", 1L, 100d));	  
@@ -270,8 +270,8 @@ public class AccountServiceTest {
 		account.setAcctNumber("123456");
 		account.setMinimumBalance(500d);
 	
-		when(accountRepository.getById(1L))
-		  	.thenReturn(account);
+		when(accountRepository.findById(1L))
+		  	.thenReturn(Optional.of(account));
 		  
 		assertThrows(InvalidTransactionAmountException.class,
 				  ()->accountService.createTransaction("deposit", 1L, -100d));	  

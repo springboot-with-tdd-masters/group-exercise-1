@@ -8,6 +8,10 @@ public class AccountNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = -2433483504677527984L;
 
+	public AccountNotFoundException() {
+		super();
+	}
+	
 	public AccountNotFoundException(String message) {
 		super(message);
 	}
