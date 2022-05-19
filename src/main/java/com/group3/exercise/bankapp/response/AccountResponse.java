@@ -1,28 +1,6 @@
-package com.group3.exercise.bankapp.entities;
+package com.group3.exercise.bankapp.response;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.hibernate.annotations.Type;
-
-import javax.persistence.*;
-
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type"
-)
-@JsonSubTypes({
-       // TODO @JsonSubTypes.Type(value = , name = "regular"),
-        @JsonSubTypes.Type(value = InterestAccount.class, name = "interest"),
-       // TODO @JsonSubTypes.Type(value = , name = "interest")
-})
-public abstract class Account {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class AccountResponse {
     private Long id;
     private String name;
     private String acctNumber;
@@ -31,7 +9,6 @@ public abstract class Account {
     private Double penalty;
     private Double transactionCharge;
     private Double interestCharge;
-    public abstract String getType();
 
     public Long getId() {
         return id;
