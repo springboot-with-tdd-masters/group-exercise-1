@@ -8,6 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -91,6 +92,36 @@ public class AccountServiceTest {
 		expectedResponse.setPenalty(10d);
 		expectedResponse.setTransactionCharge(1d);
 		expectedResponse.setInterestCharge(0d);
+
+
+		when(accountRepository.save(any())).thenReturn(expectedResponse);
+
+		AccountDto actualResponse = accountService.createAccount(accountRequest);
+
+		verify(accountRepository).save(any());
+
+		assertEquals(expectedResponse.getName(), actualResponse.getName());
+		assertEquals(expectedResponse.getAcctNumber(), actualResponse.getAcctNumber());
+		assertEquals(expectedResponse.getMinimumBalance(), actualResponse.getMinimumBalance());
+		assertEquals(expectedResponse.getType(), actualResponse.getType());
+	}
+	
+	@Test
+	@DisplayName("Should save interest account and return correct details")
+	public void shouldSaveInterestAccountAndReturnDetails() {
+		AccountRequestDto accountRequest = new AccountRequestDto();
+		accountRequest.setName("Juan Dela Cruz");
+		accountRequest.setType("checking");
+
+		Account expectedResponse = new InterestAccount();
+		expectedResponse.setName("Juan Dela Cruz");
+		expectedResponse.setAcctNumber("123456");
+		expectedResponse.setMinimumBalance(0d);
+		expectedResponse.setBalance(expectedResponse.getMinimumBalance());
+		expectedResponse.setPenalty(0d);
+		expectedResponse.setTransactionCharge(0d);
+		expectedResponse.setInterestCharge(0.03d);
+		expectedResponse.setCreatedDate(LocalDate.now());
 
 
 		when(accountRepository.save(any())).thenReturn(expectedResponse);
@@ -405,5 +436,109 @@ public class AccountServiceTest {
 
 		assertEquals(actualResponse.getBalance(),expectedBalance);
 
+	}
+	
+	@Test
+	@DisplayName("Should be able to deposit to interest account and balance will be updated correctly")
+	public void shouldeBeAbleToDepositToInterestAccount() {
+		Account account = new InterestAccount();
+		account.setId(1L);
+		account.setName("Juan Dela Cruz");
+		account.setAcctNumber("123456");
+		account.setMinimumBalance(0d);
+		account.setBalance(100d);
+		account.setPenalty(0d);
+		account.setTransactionCharge(0d);
+		account.setInterestCharge(0.03d);
+		account.setCreatedDate(LocalDate.now());
+
+		when(accountRepository.findById(1L))
+				.thenReturn(Optional.of(account));
+
+		AccountDto actualResponse = accountService.createTransaction("deposit", 1L, 100d);
+
+		double expectedBalance = 200.0d; //balance gets +100 for deposit and -1 for transaction charge
+
+		verify(accountRepository).findById(1L);
+
+		assertEquals(actualResponse.getBalance(),expectedBalance);
+	}
+	
+	@Test
+	@DisplayName("Should be able to deposit to interest account with monthly gain interest and balance will be updated correctly")
+	public void shouldeBeAbleToDepositToInterestAccountWithMonthlyGainInterest() {
+		Account account = new InterestAccount();
+		account.setId(1L);
+		account.setName("Juan Dela Cruz");
+		account.setAcctNumber("123456");
+		account.setMinimumBalance(0d);
+		account.setBalance(100d);
+		account.setPenalty(0d);
+		account.setTransactionCharge(0d);
+		account.setInterestCharge(0.03d);
+		account.setCreatedDate(LocalDate.of(2022, 4, 18));
+
+		when(accountRepository.findById(1L))
+				.thenReturn(Optional.of(account));
+
+		AccountDto actualResponse = accountService.createTransaction("deposit", 1L, 100d);
+
+		double expectedBalance = 203.0d; //balance gets +100 for deposit and -1 for transaction charge
+
+		verify(accountRepository).findById(1L);
+
+		assertEquals(actualResponse.getBalance(),expectedBalance);
+	}
+	
+	@Test
+	@DisplayName("Should be able to withdraw to interest account and balance will be updated correctly")
+	public void shouldeBeAbleToWithdrawToInterestAccount() {
+		Account account = new InterestAccount();
+		account.setId(1L);
+		account.setName("Juan Dela Cruz");
+		account.setAcctNumber("123456");
+		account.setMinimumBalance(0d);
+		account.setBalance(100d);
+		account.setPenalty(0d);
+		account.setTransactionCharge(0d);
+		account.setInterestCharge(0.03d);
+		account.setCreatedDate(LocalDate.now());
+
+		when(accountRepository.findById(1L))
+				.thenReturn(Optional.of(account));
+
+		AccountDto actualResponse = accountService.createTransaction("withdraw", 1L, 100d);
+
+		double expectedBalance = 0.0d; //balance gets +100 for deposit and -1 for transaction charge
+
+		verify(accountRepository).findById(1L);
+
+		assertEquals(actualResponse.getBalance(),expectedBalance);
+	}
+	
+	@Test
+	@DisplayName("Should be able to withdraw to interest account with monthly gain interest and balance will be updated correctly")
+	public void shouldeBeAbleToWithdrawToInterestAccountWithMonthlyGainInterest() {
+		Account account = new InterestAccount();
+		account.setId(1L);
+		account.setName("Juan Dela Cruz");
+		account.setAcctNumber("123456");
+		account.setMinimumBalance(0d);
+		account.setBalance(100d);
+		account.setPenalty(0d);
+		account.setTransactionCharge(0d);
+		account.setInterestCharge(0.03d);
+		account.setCreatedDate(LocalDate.of(2022, 4, 18));
+
+		when(accountRepository.findById(1L))
+				.thenReturn(Optional.of(account));
+
+		AccountDto actualResponse = accountService.createTransaction("withdraw", 1L, 100d);
+
+		double expectedBalance = 3.0d; //balance gets +100 for deposit and -1 for transaction charge
+
+		verify(accountRepository).findById(1L);
+
+		assertEquals(actualResponse.getBalance(),expectedBalance);
 	}
 }
