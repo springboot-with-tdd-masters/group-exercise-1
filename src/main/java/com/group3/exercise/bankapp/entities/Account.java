@@ -14,11 +14,9 @@ import javax.persistence.*;
         include = JsonTypeInfo.As.PROPERTY,
         property = "type"
 )
-@JsonSubTypes({
-       // TODO @JsonSubTypes.Type(value = , name = "regular"),
-        @JsonSubTypes.Type(value = InterestAccount.class, name = "interest"),
-       // TODO @JsonSubTypes.Type(value = , name = "interest")
-})
+@JsonSubTypes({ @JsonSubTypes.Type(value = RegularAccount.class, name = "regular"),
+		@JsonSubTypes.Type(value = InterestAccount.class, name = "interest"),
+		@JsonSubTypes.Type(value = CheckingAccount.class, name = "checking") })
 public abstract class Account {
 
     @Id
@@ -31,6 +29,14 @@ public abstract class Account {
     private Double penalty;
     private Double transactionCharge;
     private Double interestCharge;
+
+    public Account() {}
+
+    public Account(String name, String acctNumber) {
+        this.name = name;
+        this.acctNumber = acctNumber;
+    }
+
     public abstract String getType();
 
     public Long getId() {
