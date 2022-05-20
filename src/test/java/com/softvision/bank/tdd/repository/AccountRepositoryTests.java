@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static com.softvision.bank.tdd.AccountMocks.*;
@@ -32,21 +31,22 @@ public class AccountRepositoryTests {
     }
 
     @Test
-    @DisplayName("Find By ID - should accept an ID and get if it's present")
+    @DisplayName("Find By ID - should accept an ID and get when present")
     void test_findById() {
-        accountRepository.save(getMockCheckingAccount());
+        accountRepository.save(getMockRegularAccount());
 
-        Optional<Account> actualFoundAccount = accountRepository.findById(CHK_MOCK_ACCT_ID);
-        if (actualFoundAccount.isPresent()) {
-            assertThat(actualFoundAccount.get())
-                    .extracting(Account::getBalance)
-                    .isEqualTo(CHK_MOCK_BALANCE);
-            assertThat(actualFoundAccount.get())
-                    .extracting(Account::getId)
-                    .isNotEqualTo(REG_MOCK_BALANCE);
-        } else {
-           fail("Account should be present");
-        }
+        accountRepository.findById(REG_MOCK_ACCT_ID).ifPresentOrElse(actualAccount -> assertThat(actualAccount)
+            .extracting(Account::getBalance)
+            .isEqualTo(REG_MOCK_BALANCE), () -> fail("Account should be present"));
+    }
+
+    @Test
+    @DisplayName("Find By ID - should return optional empty when not found")
+    void test_findById_notFound() {
+        accountRepository.save(getMockRegularAccount());
+
+        accountRepository.findById(REG_MOCK_ACCT_ID).ifPresent(account ->
+                fail("Account should NOT be present"));
     }
 
     @AfterEach
@@ -54,4 +54,5 @@ public class AccountRepositoryTests {
         accountRepository.deleteAll();
         assertThat(accountRepository.findAll()).isEmpty();
     }
+
 }

@@ -6,25 +6,19 @@ import com.softvision.bank.tdd.model.RegularAccount;
 
 public class AccountMocks {
 
-	public static final String NAME = "Juan Dela Cruz";
-	
-	public static final double CHK_MIN_BALANCE = 100;
-    public static final double CHK_PENALTY = 10;
-    public static final double CHK_CHARGE = 1;
-    public static final long CHK_MOCK_ACCT_ID = 1L;
-    public static final String CHK_MOCK_ACCT_NO = "12315123";
-    public static final double CHK_MOCK_BALANCE = 1000;
-    public static final double CHK_MOCK_INTEREST = 0.0;
+	public static final String MOCK_NAME = "Juan Dela Cruz";
 
-    public static final double REG_PENALTY = 10;
-    public static final double REG_MIN_BALANCE = 500;
-    public static final long REG_MOCK_ACCT_ID = 2L;
+    public static final long REG_MOCK_ACCT_ID = 1L;
     public static final String REG_MOCK_ACCT_NO = "213141323";
     public static final double REG_MOCK_BALANCE = 1500;
     public static final double REG_MOCK_INTEREST = 0.0;
     public static final double REG_MOCK_TRANSACTION = 0.0;
 
-    public static final double INT_INTEREST = 0.03;
+    public static final long CHK_MOCK_ACCT_ID = 2L;
+    public static final String CHK_MOCK_ACCT_NO = "12315123";
+    public static final double CHK_MOCK_BALANCE = 1000;
+    public static final double CHK_MOCK_INTEREST = 0.0;
+
     public static final long INT_MOCK_ACCT_ID = 3L;
     public static final String INT_MOCK_ACCT_NO = "32132451";
     public static final double INT_MOCK_BALANCE = 1000;
@@ -39,11 +33,11 @@ public class AccountMocks {
     public static CheckingAccount getMockCheckingAccount() {
         CheckingAccount checkingAccount = new CheckingAccount();
         checkingAccount.setId(CHK_MOCK_ACCT_ID);
-        checkingAccount.setName(NAME);
+        checkingAccount.setName(MOCK_NAME);
         checkingAccount.setAcctNumber(CHK_MOCK_ACCT_NO);
-        checkingAccount.setMinimumBalance(CHK_MIN_BALANCE);
-        checkingAccount.setPenalty(CHK_PENALTY);
-        checkingAccount.setTransactionCharge(CHK_CHARGE);
+        checkingAccount.setMinimumBalance(ApplicationConstants.CHK_MIN_BALANCE);
+        checkingAccount.setPenalty(ApplicationConstants.CHK_PENALTY);
+        checkingAccount.setTransactionCharge(ApplicationConstants.CHK_CHARGE);
         checkingAccount.setBalance(CHK_MOCK_BALANCE);
         return checkingAccount;
     }
@@ -56,10 +50,10 @@ public class AccountMocks {
     public static RegularAccount getMockRegularAccount() {
         RegularAccount regularAccount = new RegularAccount();
         regularAccount.setId(REG_MOCK_ACCT_ID);
-        regularAccount.setName(NAME);
+        regularAccount.setName(MOCK_NAME);
         regularAccount.setAcctNumber(REG_MOCK_ACCT_NO);
-        regularAccount.setMinimumBalance(REG_MIN_BALANCE);
-        regularAccount.setPenalty(REG_PENALTY);
+        regularAccount.setMinimumBalance(ApplicationConstants.REG_MIN_BALANCE);
+        regularAccount.setPenalty(ApplicationConstants.REG_PENALTY);
         regularAccount.setBalance(REG_MOCK_BALANCE);
         regularAccount.setInterestCharge(REG_MOCK_INTEREST);
         return regularAccount;
@@ -71,9 +65,10 @@ public class AccountMocks {
      */
     public static InterestAccount getMockInterestAccount() {
         InterestAccount interestAccount = new InterestAccount();
+        interestAccount.setName(MOCK_NAME);
         interestAccount.setId(INT_MOCK_ACCT_ID);
         interestAccount.setAcctNumber(INT_MOCK_ACCT_NO);
-        interestAccount.setInterestCharge(INT_INTEREST);
+        interestAccount.setInterestCharge(ApplicationConstants.INT_INTEREST);
         interestAccount.setBalance(INT_MOCK_BALANCE);
         return interestAccount;
     }

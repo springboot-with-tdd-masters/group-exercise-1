@@ -15,15 +15,15 @@ import com.softvision.bank.tdd.model.Transaction;
 import com.softvision.bank.tdd.services.TransactionService;
 
 @RestController
-@RequestMapping("accounts")
+@RequestMapping("accounts/{id}/transactions")
 public class TransactionController {
 
 	@Autowired
 	TransactionService transactionService;
 
-	@PostMapping("/{id}/transactions")
-	public ResponseEntity<Account> transactions(@PathVariable("id") long id, @RequestBody Transaction transaction) {
-		return new ResponseEntity<Account>(transactionService.transact(id, transaction), new HttpHeaders(), HttpStatus.OK);
+	@PostMapping
+	public ResponseEntity<Account> transact(@PathVariable("id") long id, @RequestBody Transaction transaction) {
+		return new ResponseEntity<>(transactionService.transact(id, transaction), new HttpHeaders(), HttpStatus.OK);
 	}
 
 }

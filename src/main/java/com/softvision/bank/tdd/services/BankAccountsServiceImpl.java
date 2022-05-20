@@ -1,5 +1,6 @@
 package com.softvision.bank.tdd.services;
 
+import com.softvision.bank.tdd.ApplicationConstants;
 import com.softvision.bank.tdd.model.Account;
 import com.softvision.bank.tdd.model.CheckingAccount;
 import com.softvision.bank.tdd.model.InterestAccount;
@@ -39,16 +40,16 @@ public class BankAccountsServiceImpl implements BankAccountsService {
 	public Account createUpdate(Account account) {
 		account.setAcctNumber(generateRandomAcctNum());
 		if (account instanceof RegularAccount) {
-			account.setPenalty(10);
-			account.setMinimumBalance(500);
-			account.setBalance(500);
+			account.setPenalty(ApplicationConstants.REG_PENALTY);
+			account.setMinimumBalance(ApplicationConstants.REG_MIN_BALANCE);
+			account.setBalance(ApplicationConstants.REG_MIN_BALANCE);
 		} else if (account instanceof CheckingAccount) {
-			account.setMinimumBalance(100);
-			account.setTransactionCharge(1);
-			account.setPenalty(10);
-			account.setBalance(100);
+			account.setMinimumBalance(ApplicationConstants.CHK_MIN_BALANCE);
+			account.setTransactionCharge(ApplicationConstants.CHK_CHARGE);
+			account.setPenalty(ApplicationConstants.CHK_PENALTY);
+			account.setBalance(ApplicationConstants.CHK_MIN_BALANCE);
 		} else if (account instanceof InterestAccount) {
-			account.setInterestCharge(0.03);
+			account.setInterestCharge(ApplicationConstants.INT_INTEREST);
 		}
 
 		account = repository.save(account);
@@ -56,6 +57,8 @@ public class BankAccountsServiceImpl implements BankAccountsService {
 	}
 
 	private static String generateRandomAcctNum() {
-		return new Random().ints(12, 48, 57).mapToObj(c -> Character.toString((char) c)).collect(Collectors.joining());
+		return new Random().ints(12, 48, 57)
+				.mapToObj(c -> Character.toString((char) c))
+				.collect(Collectors.joining());
 	}
 }

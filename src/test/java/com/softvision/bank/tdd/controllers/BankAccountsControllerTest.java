@@ -3,7 +3,7 @@ package com.softvision.bank.tdd.controllers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -12,41 +12,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+import com.softvision.bank.tdd.ApplicationConstants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.softvision.bank.tdd.AccountMocks;
 import com.softvision.bank.tdd.exceptions.BadRequestException;
 import com.softvision.bank.tdd.exceptions.RecordNotFoundException;
 import com.softvision.bank.tdd.model.Account;
-import com.softvision.bank.tdd.model.RegularAccount;
-import com.softvision.bank.tdd.services.BankAccountsService;
-import com.softvision.bank.tdd.services.TransactionService;
+
+import static com.softvision.bank.tdd.AccountMocks.*;
 
 @WebMvcTest
-@ExtendWith(MockitoExtension.class)
-class BankAccountsControllerTest {
-
-	@Autowired
-	private MockMvc mockMvc;
-
-	@MockBean
-	private BankAccountsService bankAccountsService;
-	
-	@MockBean
-	private TransactionService trasactionService;
-
-	private ObjectMapper objectMapper = new ObjectMapper();
+@AutoConfigureMockMvc
+class BankAccountsControllerTest extends AbstractControllerTests {
 
 	@Nested
 	@DisplayName("Get Account By Id Tests")
@@ -54,51 +37,61 @@ class BankAccountsControllerTest {
 		@Test
 		@DisplayName("Should get Regular Account by Id")
 		void test_regular_getById() throws Exception {
-			when(bankAccountsService.get(anyLong())).thenReturn(AccountMocks.getMockRegularAccount());
+			when(bankAccountsService.get(REG_MOCK_ACCT_ID)).thenReturn(getMockRegularAccount());
 
-			mockMvc.perform(get("/accounts/0").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-					.andExpect(jsonPath("type").value("regular")).andExpect(jsonPath("name").value(AccountMocks.NAME))
-					.andExpect(jsonPath("acctNumber").value(AccountMocks.REG_MOCK_ACCT_NO))
-					.andExpect(jsonPath("balance").value(AccountMocks.REG_MOCK_BALANCE))
-					.andExpect(jsonPath("minimumBalance").value(AccountMocks.REG_MIN_BALANCE))
-					.andExpect(jsonPath("penalty").value(AccountMocks.REG_PENALTY))
-					.andExpect(jsonPath("transactionCharge").value(AccountMocks.REG_MOCK_TRANSACTION))
-					.andExpect(jsonPath("interestCharge").value(AccountMocks.REG_MOCK_INTEREST));
+			mockMvc.perform(get("/accounts/" + REG_MOCK_ACCT_ID).contentType(MediaType.APPLICATION_JSON))
+					.andExpect(status().isOk())
+					.andExpect(jsonPath("type").value("regular")).andExpect(jsonPath("name").value(MOCK_NAME))
+					.andExpect(jsonPath("acctNumber").value(REG_MOCK_ACCT_NO))
+					.andExpect(jsonPath("balance").value(REG_MOCK_BALANCE))
+					.andExpect(jsonPath("minimumBalance").value(ApplicationConstants.REG_MIN_BALANCE))
+					.andExpect(jsonPath("penalty").value(ApplicationConstants.REG_PENALTY))
+					.andExpect(jsonPath("transactionCharge").value(REG_MOCK_TRANSACTION))
+					.andExpect(jsonPath("interestCharge").value(REG_MOCK_INTEREST));
+
+			verify(bankAccountsService, atMostOnce()).get(anyLong());
 		}
 
 		@Test
 		@DisplayName("Should get Checking Account by Id")
 		void test_checking_getById() throws Exception {
-			when(bankAccountsService.get(anyLong())).thenReturn(AccountMocks.getMockCheckingAccount());
+			when(bankAccountsService.get(CHK_MOCK_ACCT_ID)).thenReturn(getMockCheckingAccount());
 
-			mockMvc.perform(get("/accounts/0").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-					.andExpect(jsonPath("type").value("checking")).andExpect(jsonPath("name").value(AccountMocks.NAME))
-					.andExpect(jsonPath("acctNumber").value(AccountMocks.CHK_MOCK_ACCT_NO))
-					.andExpect(jsonPath("balance").value(AccountMocks.CHK_MOCK_BALANCE))
-					.andExpect(jsonPath("minimumBalance").value(AccountMocks.CHK_MIN_BALANCE))
-					.andExpect(jsonPath("penalty").value(AccountMocks.CHK_PENALTY))
-					.andExpect(jsonPath("transactionCharge").value(AccountMocks.CHK_CHARGE))
-					.andExpect(jsonPath("interestCharge").value(AccountMocks.CHK_MOCK_INTEREST));
+			mockMvc.perform(get("/accounts/" + CHK_MOCK_ACCT_ID).contentType(MediaType.APPLICATION_JSON))
+					.andExpect(status().isOk())
+					.andExpect(jsonPath("type").value("checking")).andExpect(jsonPath("name").value(MOCK_NAME))
+					.andExpect(jsonPath("acctNumber").value(CHK_MOCK_ACCT_NO))
+					.andExpect(jsonPath("balance").value(CHK_MOCK_BALANCE))
+					.andExpect(jsonPath("minimumBalance").value(ApplicationConstants.CHK_MIN_BALANCE))
+					.andExpect(jsonPath("penalty").value(ApplicationConstants.CHK_PENALTY))
+					.andExpect(jsonPath("transactionCharge").value(ApplicationConstants.CHK_CHARGE))
+					.andExpect(jsonPath("interestCharge").value(CHK_MOCK_INTEREST));
+
+			verify(bankAccountsService, atMostOnce()).get(anyLong());
 		}
 		
 		@Test
 		@DisplayName("Should get Interest Account by Id")
 		void test_interest_getById() throws Exception {
-			when(bankAccountsService.get(anyLong())).thenReturn(AccountMocks.getMockInterestAccount());
+			when(bankAccountsService.get(INT_MOCK_ACCT_ID)).thenReturn(getMockInterestAccount());
 
-			mockMvc.perform(get("/accounts/0").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-					.andExpect(jsonPath("acctNumber").value(AccountMocks.INT_MOCK_ACCT_NO))
-					.andExpect(jsonPath("balance").value(AccountMocks.INT_MOCK_BALANCE))
-					.andExpect(jsonPath("interestCharge").value(AccountMocks.INT_INTEREST));
+			mockMvc.perform(get("/accounts/" + INT_MOCK_ACCT_ID).contentType(MediaType.APPLICATION_JSON))
+					.andExpect(status().isOk())
+					.andExpect(jsonPath("acctNumber").value(INT_MOCK_ACCT_NO))
+					.andExpect(jsonPath("balance").value(INT_MOCK_BALANCE))
+					.andExpect(jsonPath("interestCharge").value(ApplicationConstants.INT_INTEREST));
+
+			verify(bankAccountsService, atMostOnce()).get(anyLong());
 		}
 
 		@Test
 		@DisplayName("Should throw RecordNotFoundException")
 		void test_throw_RecordNotFoundException() throws Exception {
-
-			when(bankAccountsService.get(anyLong())).thenThrow(RecordNotFoundException.class);
+			when(bankAccountsService.get(0L)).thenThrow(RecordNotFoundException.class);
 			mockMvc.perform(get("/accounts/0").contentType(MediaType.APPLICATION_JSON))
 					.andExpect(status().isNotFound());
+
+			verify(bankAccountsService, atMostOnce()).get(anyLong());
 		}
 
 	}
@@ -111,40 +104,42 @@ class BankAccountsControllerTest {
 		void test_get_all_accounts() throws Exception {
 
 			List<Account> accounts = new ArrayList<>();
-			accounts.add(AccountMocks.getMockRegularAccount());
-			accounts.add(AccountMocks.getMockCheckingAccount());
+			accounts.add(getMockRegularAccount());
+			accounts.add(getMockCheckingAccount());
 
 			when(bankAccountsService.get()).thenReturn(accounts);
 
 			mockMvc.perform(get("/accounts").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 					.andExpect(jsonPath("$[0].type").value("regular"))
-					.andExpect(jsonPath("$[0].name").value(AccountMocks.NAME))
-					.andExpect(jsonPath("$[0].acctNumber").value(AccountMocks.REG_MOCK_ACCT_NO))
-					.andExpect(jsonPath("$[0].balance").value(AccountMocks.REG_MOCK_BALANCE))
-					.andExpect(jsonPath("$[0].minimumBalance").value(AccountMocks.REG_MIN_BALANCE))
-					.andExpect(jsonPath("$[0].penalty").value(AccountMocks.REG_PENALTY))
-					.andExpect(jsonPath("$[0].transactionCharge").value(AccountMocks.REG_MOCK_TRANSACTION))
-					.andExpect(jsonPath("$[0].interestCharge").value(AccountMocks.REG_MOCK_INTEREST))
+					.andExpect(jsonPath("$[0].name").value(MOCK_NAME))
+					.andExpect(jsonPath("$[0].acctNumber").value(REG_MOCK_ACCT_NO))
+					.andExpect(jsonPath("$[0].balance").value(REG_MOCK_BALANCE))
+					.andExpect(jsonPath("$[0].minimumBalance").value(ApplicationConstants.REG_MIN_BALANCE))
+					.andExpect(jsonPath("$[0].penalty").value(ApplicationConstants.REG_PENALTY))
+					.andExpect(jsonPath("$[0].transactionCharge").value(REG_MOCK_TRANSACTION))
+					.andExpect(jsonPath("$[0].interestCharge").value(REG_MOCK_INTEREST))
 					.andExpect(jsonPath("$[1].type").value("checking"))
-					.andExpect(jsonPath("$[1].name").value(AccountMocks.NAME))
-					.andExpect(jsonPath("$[1].acctNumber").value(AccountMocks.CHK_MOCK_ACCT_NO))
-					.andExpect(jsonPath("$[1].balance").value(AccountMocks.CHK_MOCK_BALANCE))
-					.andExpect(jsonPath("$[1].minimumBalance").value(AccountMocks.CHK_MIN_BALANCE))
-					.andExpect(jsonPath("$[1].penalty").value(AccountMocks.CHK_PENALTY))
-					.andExpect(jsonPath("$[1].transactionCharge").value(AccountMocks.CHK_CHARGE))
-					.andExpect(jsonPath("$[1].interestCharge").value(AccountMocks.CHK_MOCK_INTEREST));
+					.andExpect(jsonPath("$[1].name").value(MOCK_NAME))
+					.andExpect(jsonPath("$[1].acctNumber").value(CHK_MOCK_ACCT_NO))
+					.andExpect(jsonPath("$[1].balance").value(CHK_MOCK_BALANCE))
+					.andExpect(jsonPath("$[1].minimumBalance").value(ApplicationConstants.CHK_MIN_BALANCE))
+					.andExpect(jsonPath("$[1].penalty").value(ApplicationConstants.CHK_PENALTY))
+					.andExpect(jsonPath("$[1].transactionCharge").value(ApplicationConstants.CHK_CHARGE))
+					.andExpect(jsonPath("$[1].interestCharge").value(CHK_MOCK_INTEREST));
+
+			verify(bankAccountsService, atMostOnce()).get();
 		}
 
 		@Test
 		@DisplayName("Should return empty list when no record found")
 		void test_get_all_accounts_empty_list() throws Exception {
-
-			when(bankAccountsService.get()).thenReturn(new ArrayList<Account>());
+			when(bankAccountsService.get()).thenReturn(new ArrayList<>());
 
 			MvcResult mvcResult = mockMvc.perform(get("/accounts").contentType(MediaType.APPLICATION_JSON))
 					.andExpect(status().isOk()).andReturn();
 
 			assertThat("[]").isEqualTo(mvcResult.getResponse().getContentAsString());
+			verify(bankAccountsService, atMostOnce()).get();
 		}
 	}
 
@@ -154,66 +149,68 @@ class BankAccountsControllerTest {
 		@Test
 		@DisplayName("Should create regular account")
 		void test_create_regular_account() throws Exception {
-
-			when(bankAccountsService.createUpdate(any())).thenReturn(AccountMocks.getMockRegularAccount());
+			when(bankAccountsService.createUpdate(argThat(account -> MOCK_NAME.equals(account.getName()))))
+					.thenReturn(getMockRegularAccount());
 
 			mockMvc.perform(
-					post("/accounts").content(objectMapper.writeValueAsString(AccountMocks.getMockRegularAccount()))
+					post("/accounts").content(objectMapper.writeValueAsString(getMockRegularAccount()))
 							.contentType(MediaType.APPLICATION_JSON))
 					.andExpect(status().isCreated()).andExpect(jsonPath("type").value("regular"))
-					.andExpect(jsonPath("name").value(AccountMocks.NAME))
-					.andExpect(jsonPath("acctNumber").value(AccountMocks.REG_MOCK_ACCT_NO))
-					.andExpect(jsonPath("balance").value(AccountMocks.REG_MOCK_BALANCE))
-					.andExpect(jsonPath("minimumBalance").value(AccountMocks.REG_MIN_BALANCE))
-					.andExpect(jsonPath("penalty").value(AccountMocks.REG_PENALTY))
-					.andExpect(jsonPath("transactionCharge").value(AccountMocks.REG_MOCK_TRANSACTION))
-					.andExpect(jsonPath("interestCharge").value(AccountMocks.REG_MOCK_INTEREST));
-
+					.andExpect(jsonPath("name").value(MOCK_NAME))
+					.andExpect(jsonPath("acctNumber").value(REG_MOCK_ACCT_NO))
+					.andExpect(jsonPath("balance").value(REG_MOCK_BALANCE))
+					.andExpect(jsonPath("minimumBalance").value(ApplicationConstants.REG_MIN_BALANCE))
+					.andExpect(jsonPath("penalty").value(ApplicationConstants.REG_PENALTY))
+					.andExpect(jsonPath("transactionCharge").value(REG_MOCK_TRANSACTION))
+					.andExpect(jsonPath("interestCharge").value(REG_MOCK_INTEREST));
+			verify(bankAccountsService, atMostOnce()).createUpdate(any());
 		}
 
 		@Test
-		@DisplayName("Should create regular account")
+		@DisplayName("Should create checking account")
 		void test_create_checking_account() throws Exception {
-
-			when(bankAccountsService.createUpdate(any())).thenReturn(AccountMocks.getMockCheckingAccount());
+			when(bankAccountsService.createUpdate(argThat(account -> MOCK_NAME.equals(account.getName()))))
+					.thenReturn(getMockCheckingAccount());
 
 			mockMvc.perform(
-					post("/accounts").content(objectMapper.writeValueAsString(AccountMocks.getMockRegularAccount()))
+					post("/accounts").content(objectMapper.writeValueAsString(getMockRegularAccount()))
 							.contentType(MediaType.APPLICATION_JSON))
 					.andExpect(status().isCreated()).andExpect(jsonPath("type").value("checking"))
-					.andExpect(jsonPath("name").value(AccountMocks.NAME))
-					.andExpect(jsonPath("acctNumber").value(AccountMocks.CHK_MOCK_ACCT_NO))
-					.andExpect(jsonPath("balance").value(AccountMocks.CHK_MOCK_BALANCE))
-					.andExpect(jsonPath("minimumBalance").value(AccountMocks.CHK_MIN_BALANCE))
-					.andExpect(jsonPath("penalty").value(AccountMocks.CHK_PENALTY))
-					.andExpect(jsonPath("transactionCharge").value(AccountMocks.CHK_CHARGE))
-					.andExpect(jsonPath("interestCharge").value(AccountMocks.CHK_MOCK_INTEREST));
-
+					.andExpect(jsonPath("name").value(MOCK_NAME))
+					.andExpect(jsonPath("acctNumber").value(CHK_MOCK_ACCT_NO))
+					.andExpect(jsonPath("balance").value(CHK_MOCK_BALANCE))
+					.andExpect(jsonPath("minimumBalance").value(ApplicationConstants.CHK_MIN_BALANCE))
+					.andExpect(jsonPath("penalty").value(ApplicationConstants.CHK_PENALTY))
+					.andExpect(jsonPath("transactionCharge").value(ApplicationConstants.CHK_CHARGE))
+					.andExpect(jsonPath("interestCharge").value(CHK_MOCK_INTEREST));
+			verify(bankAccountsService, atMostOnce()).createUpdate(any());
 		}
 		
 		@Test
 		@DisplayName("Should create interest account")
 		void test_create_interest_account() throws Exception {
-
-			when(bankAccountsService.createUpdate(any())).thenReturn(AccountMocks.getMockInterestAccount());
+			when(bankAccountsService.createUpdate(argThat(account -> MOCK_NAME.equals(account.getName()))))
+					.thenReturn(getMockInterestAccount());
 
 			mockMvc.perform(
-					post("/accounts").content(objectMapper.writeValueAsString(AccountMocks.getMockInterestAccount()))
+					post("/accounts").content(objectMapper.writeValueAsString(getMockInterestAccount()))
 							.contentType(MediaType.APPLICATION_JSON))
 					.andExpect(status().isCreated()).andExpect(jsonPath("type").value("interest"))
-					.andExpect(jsonPath("acctNumber").value(AccountMocks.INT_MOCK_ACCT_NO))
-					.andExpect(jsonPath("balance").value(AccountMocks.INT_MOCK_BALANCE))
-					.andExpect(jsonPath("interestCharge").value(AccountMocks.INT_INTEREST));
-
+					.andExpect(jsonPath("acctNumber").value(INT_MOCK_ACCT_NO))
+					.andExpect(jsonPath("balance").value(INT_MOCK_BALANCE))
+					.andExpect(jsonPath("interestCharge").value(ApplicationConstants.INT_INTEREST));
+			verify(bankAccountsService, atMostOnce()).createUpdate(any());
 		}
 
 		@Test
 		@DisplayName("Should throw bad requst exception ")
 		void test_throw_BadRequestException() throws Exception {
-
-			when(bankAccountsService.createUpdate(any())).thenThrow(BadRequestException.class);
-			mockMvc.perform(post("/accounts").content(objectMapper.writeValueAsString(new RegularAccount()))
+			when(bankAccountsService.createUpdate(argThat(account ->
+					MOCK_NAME.equals(account.getName())
+			))).thenThrow(BadRequestException.class);
+			mockMvc.perform(post("/accounts").content(objectMapper.writeValueAsString(getMockRegularAccount()))
 					.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+			verify(bankAccountsService, atMostOnce()).createUpdate(any());
 		}
 	}
 
