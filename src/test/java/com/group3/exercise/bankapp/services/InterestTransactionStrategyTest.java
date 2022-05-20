@@ -39,10 +39,10 @@ public class InterestTransactionStrategyTest {
     @DisplayName("Should withdraw from account")
     void shouldWithdrawFromAccount(){
         // given
-        Account stub = new InterestAccount();
+        InterestAccount stub = new InterestAccount();
         stub.setBalance(0.0);
         // when
-        Account actual = interestTransactionStrategy.withdraw(stub, 200.0);
+        InterestAccount actual = interestTransactionStrategy.withdraw(stub, 200.0);
         // then
         assertEquals(-200.0, actual.getBalance());
     }
@@ -50,10 +50,10 @@ public class InterestTransactionStrategyTest {
     @DisplayName("Should deposit to account")
     void shouldDepositToAccount(){
         // given
-        Account stub = new InterestAccount();
+        InterestAccount stub = new InterestAccount();
         stub.setBalance(0.0);
         // when
-        Account actual = interestTransactionStrategy.deposit(stub, 200.0);
+        InterestAccount actual = interestTransactionStrategy.deposit(stub, 200.0);
         // then
         assertEquals(200.0, actual.getBalance());
     }

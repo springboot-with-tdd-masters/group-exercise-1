@@ -56,8 +56,8 @@ public class TransactionStrategyNavigatorTest {
     @DisplayName("should call interest service when withdraw is called")
     void shouldCallInterestTransactionStrategyWhenWithdrawIsCalled(){
         // given
-        Account stub = new InterestAccount();
-        when(interestTxnService.withdraw(any(Account.class), anyDouble())).thenReturn(new InterestAccount());
+        InterestAccount stub = new InterestAccount();
+        when(interestTxnService.withdraw(any(InterestAccount.class), anyDouble())).thenReturn(new InterestAccount());
         // when
         navigator.withdraw(stub, 200.0);
         // then
@@ -67,8 +67,8 @@ public class TransactionStrategyNavigatorTest {
     @DisplayName("should call interest service when deposit is called")
     void shouldCallInterestTransactionStrategyWhenDepositIsCalled(){
         // given
-        Account stub = new InterestAccount();
-        when(interestTxnService.deposit(any(Account.class), anyDouble())).thenReturn(new InterestAccount());
+        InterestAccount stub = new InterestAccount();
+        when(interestTxnService.deposit(any(InterestAccount.class), anyDouble())).thenReturn(new InterestAccount());
         // when
         navigator.deposit(stub, 200.0);
         // then
