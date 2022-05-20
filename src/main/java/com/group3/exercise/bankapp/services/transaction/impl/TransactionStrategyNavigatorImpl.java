@@ -1,6 +1,7 @@
 package com.group3.exercise.bankapp.services.transaction.impl;
 
 import com.group3.exercise.bankapp.entities.Account;
+import com.group3.exercise.bankapp.entities.CheckingAccount;
 import com.group3.exercise.bankapp.entities.InterestAccount;
 import com.group3.exercise.bankapp.entities.RegularAccount;
 import com.group3.exercise.bankapp.exceptions.InvalidAccountTypeException;
@@ -19,16 +20,18 @@ public class TransactionStrategyNavigatorImpl implements TransactionStrategyNavi
     private final Map<String, TransactionStrategy> txnTypeLookup;
 
     public TransactionStrategyNavigatorImpl(
+    		RegularTransactionStrategy regularTransactionStrategy,
             InterestTransactionStrategy interestTransactionStrategy,
-            RegularTransactionStrategy regularTransactionStrategy
-            // TODO add other txn svc here
+            CheckingTransactionStrategy checkingTransactionStrategy
     ){
         txnLookup = new HashMap<>();
         txnTypeLookup = new HashMap<>();
-        txnLookup.put(InterestAccount.class, interestTransactionStrategy);
         txnLookup.put(RegularAccount.class, regularTransactionStrategy);
-        txnTypeLookup.put(InterestAccount.TYPE, interestTransactionStrategy);
+        txnLookup.put(InterestAccount.class, interestTransactionStrategy);
+        txnLookup.put(CheckingAccount.class, checkingTransactionStrategy);
         txnTypeLookup.put(RegularAccount.TYPE, regularTransactionStrategy);
+        txnTypeLookup.put(InterestAccount.TYPE, interestTransactionStrategy);
+        txnTypeLookup.put(CheckingAccount.TYPE, checkingTransactionStrategy);
     }
 
     @Override

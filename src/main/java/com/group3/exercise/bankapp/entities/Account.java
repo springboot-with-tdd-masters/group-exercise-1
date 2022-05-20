@@ -14,11 +14,9 @@ import javax.persistence.*;
         include = JsonTypeInfo.As.PROPERTY,
         property = "type"
 )
-@JsonSubTypes({
-       // TODO @JsonSubTypes.Type(value = , name = "regular"),
-        @JsonSubTypes.Type(value = InterestAccount.class, name = "interest"),
-       // TODO @JsonSubTypes.Type(value = , name = "interest")
-})
+@JsonSubTypes({ @JsonSubTypes.Type(value = RegularAccount.class, name = "regular"),
+		@JsonSubTypes.Type(value = InterestAccount.class, name = "interest"),
+		@JsonSubTypes.Type(value = CheckingAccount.class, name = "checking") })
 public abstract class Account {
 
     @Id
