@@ -31,6 +31,14 @@ public abstract class Account {
     private Double penalty;
     private Double transactionCharge;
     private Double interestCharge;
+
+    public Account() {}
+
+    public Account(String name, String acctNumber) {
+        this.name = name;
+        this.acctNumber = acctNumber;
+    }
+
     public abstract String getType();
 
     public Long getId() {
