@@ -2,7 +2,8 @@ package com.group3.exercise.bankapp.services;
 
 import com.group3.exercise.bankapp.adapters.AccountAdapter;
 import com.group3.exercise.bankapp.entities.InterestAccount;
-import com.group3.exercise.bankapp.exceptions.AccountTransactionException;
+import com.group3.exercise.bankapp.exceptions.BankAppException;
+import com.group3.exercise.bankapp.exceptions.BankAppExceptionCode;
 import com.group3.exercise.bankapp.repository.AccountRepository;
 import com.group3.exercise.bankapp.request.TransactionRequest;
 import com.group3.exercise.bankapp.response.AccountResponse;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 
 import java.util.Optional;
 
@@ -95,7 +95,7 @@ public class AccountServiceTest {
     @DisplayName("should throw AccountTransactionException if unable to find account")
     void shouldThrowTransactionExceptionIfUnableToFindAccount() {
         when(repository.findById(anyLong())).thenReturn(null);
-        assertThrows(AccountTransactionException.class, () -> service.deposit(1L, new TransactionRequest()));
+        assertThrows(BankAppException.class, () -> service.deposit(1L, new TransactionRequest()));
     }
     @Test
     @DisplayName("should throw AccountTransactionException if unable to map account")
@@ -104,10 +104,10 @@ public class AccountServiceTest {
         request.setAmount(100.0);
         when(repository.findById(anyLong())).thenReturn(Optional.of(new InterestAccount()));
         when(navigator.deposit(any(InterestAccount.class), anyDouble())).thenReturn(new InterestAccount());
-        when(adapter.mapToResponse(any(InterestAccount.class))).thenThrow(new AccountTransactionException(HttpStatus.BAD_REQUEST, "Unable to map response"));
+        when(adapter.mapToResponse(any(InterestAccount.class))).thenThrow(new BankAppException(BankAppExceptionCode.BAD_REQUEST));
         when(repository.save(any(InterestAccount.class))).thenReturn(new InterestAccount());
-        AccountTransactionException actual = assertThrows(AccountTransactionException.class, () -> service.deposit(1L, request));
-        assertEquals("Unable to map response", actual.getErrorMsg());
+        BankAppException actual = assertThrows(BankAppException.class, () -> service.deposit(1L, request));
+        assertEquals("Unable to map response", actual.getMessage());
     }
 
 }

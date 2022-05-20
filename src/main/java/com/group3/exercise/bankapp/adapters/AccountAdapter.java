@@ -1,9 +1,9 @@
 package com.group3.exercise.bankapp.adapters;
 
 import com.group3.exercise.bankapp.entities.Account;
-import com.group3.exercise.bankapp.exceptions.AccountTransactionException;
+import com.group3.exercise.bankapp.exceptions.BankAppException;
+import com.group3.exercise.bankapp.exceptions.BankAppExceptionCode;
 import com.group3.exercise.bankapp.response.AccountResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,7 +22,7 @@ public class AccountAdapter {
             response.setPenalty(account.getPenalty());
             return response;
         } catch (Exception e){
-            throw new AccountTransactionException(HttpStatus.BAD_REQUEST, "Unable to map response");
+            throw new BankAppException(BankAppExceptionCode.BAD_REQUEST);
         }
     }
 

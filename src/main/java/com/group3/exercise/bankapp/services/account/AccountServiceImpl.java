@@ -1,7 +1,8 @@
 package com.group3.exercise.bankapp.services.account;
 
 import com.group3.exercise.bankapp.adapters.AccountAdapter;
-import com.group3.exercise.bankapp.exceptions.AccountTransactionException;
+import com.group3.exercise.bankapp.exceptions.BankAppException;
+import com.group3.exercise.bankapp.exceptions.BankAppExceptionCode;
 import com.group3.exercise.bankapp.repository.AccountRepository;
 import com.group3.exercise.bankapp.request.CreateAccountRequest;
 import com.group3.exercise.bankapp.request.TransactionRequest;
@@ -33,7 +34,7 @@ public class AccountServiceImpl implements AccountService {
                 .map(req -> this.transactionStrategyNavigator.generateNewAccountDetails(req.getName(),generateAcctNbr() ,req.getType()))
                 .map(this.accountRepository::save)
                 .map(accountAdapter::mapToResponse)
-                .orElseThrow(AccountTransactionException::new);
+                .orElseThrow(() -> new BankAppException(BankAppExceptionCode.INTERNAL_SERVER_ERROR));
     }
 
     @Override
@@ -44,7 +45,7 @@ public class AccountServiceImpl implements AccountService {
                 .map(found -> this.transactionStrategyNavigator.withdraw(found, request.getAmount()))
                 .map(accountRepository::save)
                 .map(accountAdapter::mapToResponse)
-                .orElseThrow(AccountTransactionException::new);
+                .orElseThrow(() -> new BankAppException(BankAppExceptionCode.INTERNAL_SERVER_ERROR));
     }
 
     @Override
@@ -55,7 +56,7 @@ public class AccountServiceImpl implements AccountService {
                 .map(a -> this.transactionStrategyNavigator.deposit(a, request.getAmount()))
                 .map(accountRepository::save)
                 .map(accountAdapter::mapToResponse)
-                .orElseThrow(AccountTransactionException::new);
+                .orElseThrow(() -> new BankAppException(BankAppExceptionCode.INTERNAL_SERVER_ERROR));
     }
     private String generateAcctNbr(){
         return String.valueOf(new Random().nextInt(99999999));
