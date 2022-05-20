@@ -1,5 +1,6 @@
 package com.masters.masters.exercise.model;
 
+import java.time.LocalDate;
 import java.util.Random;
 
 import javax.persistence.Entity;
@@ -24,5 +25,5 @@ public class InterestAccount extends Account{
 		Random rand = new Random(); 
 		return rand.nextInt(9000000) + 1000000; 
 	}
-	
+
 }

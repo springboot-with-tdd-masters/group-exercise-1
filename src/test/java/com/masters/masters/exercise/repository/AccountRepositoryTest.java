@@ -1,6 +1,8 @@
 package com.masters.masters.exercise.repository;
 
 import com.masters.masters.exercise.model.CheckingAccount;
+import com.masters.masters.exercise.model.InterestAccount;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,29 @@ public class AccountRepositoryTest {
 
     @Autowired
     AccountRepository repo;
+    
+    @Test
+    public void saveInterestAccountHappyPath(){
+        InterestAccount account = new InterestAccount();
+        account.setName("name");
+        InterestAccount savedAccount = repo.save(account);
+        Assertions.assertThat(savedAccount).extracting("name","interestCharge")
+        .containsExactly("name",0.03);
+    }
+    
+    @Test
+    public void updateInterestAccountHappyPath(){
+        InterestAccount account = new InterestAccount();
+        account.setName("name");
+        account.setBalance(500);
+        InterestAccount savedAccount = repo.save(account);
+        Assertions.assertThat(savedAccount).extracting("name","interestCharge")
+        .containsExactly("name",0.03);
+        savedAccount.setBalance(200);
+        InterestAccount updatedAccount = repo.save(account);
+        Assertions.assertThat(updatedAccount).extracting("name","balance")
+        .containsExactly("name",200.0);
+    }
 
     @Test
     public void saveCheckingAccountHappyPath(){

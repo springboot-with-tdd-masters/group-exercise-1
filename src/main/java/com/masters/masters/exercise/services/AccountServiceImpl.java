@@ -28,32 +28,24 @@ public class AccountServiceImpl {
 
 			if(StringUtils.hasText(dto.getType())) {
 				String type = dto.getType();
+				
+				if(account.isPresent()) {
+					throw new AccountExistException("The account is already exist");
+				}
 
 				if(type.equalsIgnoreCase(AccountType.REGULAR.toString())) {
-					if(account.isPresent()) {
-						throw new AccountExistException("The account is already exist");
-					} else {
 						Account newEntity = new RegularAccount();
 						newEntity.setName(dto.getName());
 						newEntity = repo.save(newEntity);
 						result = newEntity;
-					}
 				} else if(type.equalsIgnoreCase(AccountType.INTEREST.toString())) {
-					if(account.isPresent()) {
-						throw new AccountExistException("The account is already exist");
-					} else {
 						Account newAccount = new InterestAccount();
 						newAccount.setName(dto.getName());
 						result = repo.save(newAccount);
-					}
 				} else if(type.equalsIgnoreCase(AccountType.CHECKING.toString())) {
-					if(account.isPresent()) {
-						throw new AccountExistException("The account is already exist");
-					} else {
 						Account newAccount = new CheckingAccount();
 						newAccount.setName(dto.getName());
 						result = repo.save(newAccount);
-					}
 				} else {
 					throw new InvalidTypeException("Invalid Account Type");
 				}

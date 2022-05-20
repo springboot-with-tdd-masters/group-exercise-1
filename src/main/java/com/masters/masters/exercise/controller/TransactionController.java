@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.masters.masters.exercise.exception.AmountExceededException;
 import com.masters.masters.exercise.exception.RecordNotFoundException;
 import com.masters.masters.exercise.model.Account;
 import com.masters.masters.exercise.model.TransactionType;
@@ -39,7 +40,7 @@ public class TransactionController {
 	private TransactionImpl transactionService;
 
 	@PostMapping("/{id}/transactions")
-	public ResponseEntity<Account> transactions(@PathVariable Long id, @RequestBody TransactionDto transaction) throws RecordNotFoundException, JsonProcessingException {
+	public ResponseEntity<Account> transactions(@PathVariable Long id, @RequestBody TransactionDto transaction) throws RecordNotFoundException, JsonProcessingException, AmountExceededException {
 		Account response = null;
 		Account account = accountService.getAccountById(id);
 		String type = transaction.getType();

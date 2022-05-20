@@ -41,4 +41,9 @@ public class GlobalExceptionHandler {
 		
 	}
 	
+	@ExceptionHandler(AmountExceededException.class)
+	public final ResponseEntity<Object> handleAmountExceededException(AmountExceededException exception, WebRequest request) {
+		return new ResponseEntity<Object>(exception.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+		
+	}
 }
