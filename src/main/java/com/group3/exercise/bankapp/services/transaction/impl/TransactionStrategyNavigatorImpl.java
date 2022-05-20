@@ -14,29 +14,25 @@ import java.util.Optional;
 @Service
 public class TransactionStrategyNavigatorImpl implements TransactionStrategyNavigator {
 
-    private final Map<String, Class<? extends Account>> acctLookup;
     private final Map<Class<? extends Account>, TransactionStrategy> txnLookup;
+    private final Map<String, TransactionStrategy> txnTypeLookup;
 
     public TransactionStrategyNavigatorImpl(
             InterestTransactionStrategy interestTransactionStrategy
             // TODO add other txn svc here
     ){
         txnLookup = new HashMap<>();
-        acctLookup = new HashMap<>();
-        acctLookup.put("interest", InterestAccount.class);
+        txnTypeLookup = new HashMap<>();
+        // TODO extract to a generic strategy helper?
         txnLookup.put(InterestAccount.class, interestTransactionStrategy);
+        txnTypeLookup.put(InterestAccount.TYPE, interestTransactionStrategy);
     }
 
     @Override
     public Account generateNewAccountDetails(String name, String acctNumber, String type) {
-        Class<? extends  Account> acctType = null;
-        if(acctLookup.containsKey(type)){
-           acctType = acctLookup.get(type);
-        }
-        return Optional.ofNullable(acctType)
-                    .map(txnLookup::get)
-                    .map(txn -> txn.generateNewAccountDetails(name, acctNumber))
-                    .orElseThrow(InvalidAccountTypeException::new);
+        return Optional.ofNullable(txnTypeLookup.get(type))
+                .map(txn -> txn.generateNewAccountDetails(name, acctNumber))
+                .orElseThrow(InvalidAccountTypeException::new);
     }
 
     @Override

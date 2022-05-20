@@ -1,13 +1,12 @@
 package com.group3.exercise.bankapp.services.transaction.impl;
 
-import com.group3.exercise.bankapp.entities.Account;
 import com.group3.exercise.bankapp.entities.InterestAccount;
 import com.group3.exercise.bankapp.services.transaction.TransactionStrategy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-public class InterestTransactionStrategy implements TransactionStrategy {
+public class InterestTransactionStrategy implements TransactionStrategy<InterestAccount> {
 
     private final Double interest;
     private final Double minimumBalance;
@@ -19,18 +18,17 @@ public class InterestTransactionStrategy implements TransactionStrategy {
         this.minimumBalance = minimumBalance;
     }
 
-
     @Override
-    public Account generateNewAccountDetails(String name, String acctNumber) {
+    public InterestAccount generateNewAccountDetails(String name, String acctNumber) {
         // TODO generate Account entity here.
-        Account account = new InterestAccount();
+        InterestAccount account = new InterestAccount();
         account.setInterestCharge(interest);
         account.setMinimumBalance(minimumBalance);
         return account;
     }
 
     @Override
-    public Account withdraw(Account account, Double amount) {
+    public InterestAccount withdraw(InterestAccount account, Double amount) {
         // TODO update account entity with business rules
         Double currentBalance = account.getBalance();
         Double updated = currentBalance - amount;
@@ -39,7 +37,7 @@ public class InterestTransactionStrategy implements TransactionStrategy {
     }
 
     @Override
-    public Account deposit(Account account, Double amount) {
+    public InterestAccount deposit(InterestAccount account, Double amount) {
         // TODO update account entity with business rules
         Double currentBalance = account.getBalance();
         Double updated = currentBalance + amount;
