@@ -36,8 +36,6 @@ public class RegularTransactionStrategyTest {
         final RegularAccount regularAccount = regularTransactionStrategy.generateNewAccountDetails(name, accountNumber);
 
         // Assert
-        // TODO add need more scenario when repository is implemented (i.e unique account number)
-
         assertThat(regularAccount)
                 .isNotNull();
         assertThat(regularAccount)
