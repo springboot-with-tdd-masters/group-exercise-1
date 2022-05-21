@@ -92,22 +92,47 @@ public class AccountServiceTest {
     }
 
     @Test
-    @DisplayName("should throw AccountTransactionException if unable to find account")
-    void shouldThrowTransactionExceptionIfUnableToFindAccount() {
-        when(repository.findById(anyLong())).thenReturn(null);
-        assertThrows(AccountTransactionException.class, () -> service.deposit(1L, new TransactionRequest()));
+    @DisplayName("should throw correct exception if unable to find account upon deposit")
+    void shouldThrowTransactionExceptionIfUnableToFindAccountUponDeposit() {
+        TransactionRequest request = new TransactionRequest();
+        request.setAmount(100.0);
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(BankAppException.class, () -> service.deposit(1L, request));
     }
     @Test
-    @DisplayName("should throw AccountTransactionException if unable to map account")
+    @DisplayName("should throw correct exception if unable to find account upon withdraw")
+    void shouldThrowTransactionExceptionIfUnableToFindAccountUponWithdraw() {
+        TransactionRequest request = new TransactionRequest();
+        request.setAmount(100.0);
+        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(BankAppException.class, () -> service.withdraw(1L, request));
+    }
+    @Test
+    @DisplayName("should throw correct Exception if unable to map account")
     void shouldThrowTransactionExceptionIfUnableToMapAccount() {
         TransactionRequest request = new TransactionRequest();
         request.setAmount(100.0);
         when(repository.findById(anyLong())).thenReturn(Optional.of(new InterestAccount()));
         when(navigator.deposit(any(InterestAccount.class), anyDouble())).thenReturn(new InterestAccount());
-        when(adapter.mapToResponse(any(InterestAccount.class))).thenThrow(new AccountTransactionException(HttpStatus.BAD_REQUEST, "Unable to map response"));
+        when(adapter.mapToResponse(any(InterestAccount.class))).thenThrow(new BankAppException(BankAppExceptionCode.MAPPING_EXCEPTION));
         when(repository.save(any(InterestAccount.class))).thenReturn(new InterestAccount());
         AccountTransactionException actual = assertThrows(AccountTransactionException.class, () -> service.deposit(1L, request));
         assertEquals("Unable to map response", actual.getErrorMsg());
     }
-
+    @Test
+    @DisplayName("should throw correct exception if invalid amount on withdraw")
+    void shouldThrowCorrectExceptionIfWithdrawAndInvalidAmount() {
+        TransactionRequest request = new TransactionRequest();
+        request.setAmount(-100.0);
+        BankAppException actual = assertThrows(BankAppException.class, () -> service.withdraw(1L, request));
+        assertEquals("Please insert a valid amount", actual.getMessage());
+    }
+    @Test
+    @DisplayName("should throw correct exception if invalid amount on deposit")
+    void shouldThrowCorrectExceptionIfDepositAndInvalidAmount() {
+        TransactionRequest request = new TransactionRequest();
+        request.setAmount(-100.0);
+        BankAppException actual = assertThrows(BankAppException.class, () -> service.deposit(1L, request));
+        assertEquals("Please insert a valid amount", actual.getMessage());
+    }
 }

@@ -1,7 +1,9 @@
 package com.group3.exercise.bankapp.services.account;
 
 import com.group3.exercise.bankapp.adapters.AccountAdapter;
-import com.group3.exercise.bankapp.exceptions.AccountTransactionException;
+import com.group3.exercise.bankapp.entities.Account;
+import com.group3.exercise.bankapp.exceptions.BankAppException;
+import com.group3.exercise.bankapp.exceptions.BankAppExceptionCode;
 import com.group3.exercise.bankapp.repository.AccountRepository;
 import com.group3.exercise.bankapp.request.CreateAccountRequest;
 import com.group3.exercise.bankapp.request.TransactionRequest;
@@ -38,26 +40,42 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse withdraw(Long id, TransactionRequest request) {
-        return Optional.ofNullable(id)
-                .map(accountRepository::findById)
+        if(!isValidAmount(request.getAmount())){
+            throw new BankAppException(BankAppExceptionCode.INVALID_AMOUNT_EXCEPTION);
+        }
+        Optional<Account> found = accountRepository.findById(id);
+        if(!found.isPresent()){
+            throw new BankAppException(BankAppExceptionCode.ACCOUNT_NOT_FOUND_EXCEPTION);
+        }
+        return Optional.of(found)
                 .map(Optional::get)
-                .map(found -> this.transactionStrategyNavigator.withdraw(found, request.getAmount()))
+                .map(a -> this.transactionStrategyNavigator.withdraw(a, request.getAmount()))
                 .map(accountRepository::save)
                 .map(accountAdapter::mapToResponse)
-                .orElseThrow(AccountTransactionException::new);
+                .orElseThrow(() -> new BankAppException(BankAppExceptionCode.SERVER_TRANSACTION_EXCEPTION));
     }
 
     @Override
     public AccountResponse deposit(Long id, TransactionRequest request) {
-        return Optional.of(id)
-                .map(accountRepository::findById)
+        if(!isValidAmount(request.getAmount())){
+            throw new BankAppException(BankAppExceptionCode.INVALID_AMOUNT_EXCEPTION);
+        }
+        Optional<Account> found = accountRepository.findById(id);
+        if(!found.isPresent()){
+            throw new BankAppException(BankAppExceptionCode.ACCOUNT_NOT_FOUND_EXCEPTION);
+        }
+        return Optional.of(found)
                 .map(Optional::get)
                 .map(a -> this.transactionStrategyNavigator.deposit(a, request.getAmount()))
                 .map(accountRepository::save)
                 .map(accountAdapter::mapToResponse)
-                .orElseThrow(AccountTransactionException::new);
+                .orElseThrow(() -> new BankAppException(BankAppExceptionCode.SERVER_TRANSACTION_EXCEPTION));
     }
     private String generateAcctNbr(){
         return String.valueOf(new Random().nextInt(99999999));
+    }
+
+    private boolean isValidAmount(Double amount){
+        return amount > 0.0;
     }
 }
