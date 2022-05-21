@@ -1,5 +1,6 @@
 package com.advancejava.groupexercise1.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.sun.istack.NotNull;
@@ -24,8 +25,11 @@ public abstract class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @JsonIgnore
+    private String type;
 
-    private String name;
+    @NotNull
+    protected String name;
 
     @NotNull
     protected String acctNumber;
@@ -60,6 +64,14 @@ public abstract class Account {
 
     public Integer getId() {
         return id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void setId(Integer id) {

@@ -2,7 +2,7 @@ package com.advancejava.groupexercise1.controller;
 
 import com.advancejava.groupexercise1.entity.Account;
 import com.advancejava.groupexercise1.service.BankService;
-import com.advancejava.groupexercise1.service.BankServiceImpl;
+import com.advancejava.groupexercise1.model.Deposit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +28,11 @@ public class BankController {
     @GetMapping("/accounts")
     public List<Account> getAccount(){ return bankService.getAccounts(); }
 
-    @PutMapping("/accounts")
-    public Account updateAccount(Account acct){ return bankService.updateAccount(acct); }
-
+    @PostMapping("/accounts/{id}/transactions")
+    public Account depositAccount(@RequestBody Deposit deposit, @PathVariable Integer id){
+        bankService.updateAccount(deposit,id);
+        return bankService.getAccount(id);
+    }
     @DeleteMapping("/accounts/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteAccount(@PathVariable Integer id) {

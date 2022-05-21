@@ -1,10 +1,13 @@
 package com.advancejava.groupexercise1.entity;
 
 
+import com.advancejava.groupexercise1.constants.TypeEnum;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import javax.persistence.Entity;
 import java.util.Random;
+
+import static com.advancejava.groupexercise1.helper.RandomNumberGeneratorUtility.generate;
 
 @Entity
 @JsonTypeName("regular")
@@ -34,14 +37,14 @@ public class RegularAccount extends Account {
         using this will force you to pass param and will cause to write @JsonProperty for each attributes/fields
          */
         Random random = new Random();
-        //System.out.println();
-        this.loan = 1000.00;//sample additional field specific for the child
-        this.setAcctNumber(String.valueOf(random.nextInt(1000000)));
+        //this.loan = 1000.00;//sample additional field specific for the child
+        this.setAcctNumber(generate());
         this.setBalance(500.00);
         this.setMinimumBalance(500.00);
         this.setPenalty(10.00);
         this.setTransactionCharge(0.00);
         this.setInterestCharge(0.00);
+        this.setType(String.valueOf(TypeEnum.regular));
 
     }
 }
