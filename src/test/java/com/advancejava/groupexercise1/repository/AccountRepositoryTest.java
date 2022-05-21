@@ -16,14 +16,47 @@ public class AccountRepositoryTest {
     @Test
     public void testSave() {
         //arrange
-       // RegularAccount regularAccount = new RegularAccount("John Doe");
-
+        RegularAccount regularAccount = new RegularAccount();
+        regularAccount.setName("John Doe");
+        regularAccount.setMinimumBalance(500.00);
         //execute
-   //     RegularAccount savedAccount = accountRepository.save(regularAccount);
+        RegularAccount savedAccount = accountRepository.save(regularAccount);
 
         //test
-//        assertThat(savedAccount)
-//                .extracting("name", "minimumBalance")
-//                .containsExactly("John Doe", 500.00);
+        assertThat(savedAccount)
+                .extracting("name", "minimumBalance")
+                .containsExactly("John Doe", 500.00);
+    }
+
+    @Test
+    public void testDeposit() {
+        //arrange
+        RegularAccount regularAccount = new RegularAccount();
+        regularAccount.setId(1);
+        regularAccount.setName("John Doe");
+        regularAccount.setBalance(100.00 + 100.00);
+        //execute
+        RegularAccount savedAccount = accountRepository.save(regularAccount);
+
+        //test
+        assertThat(savedAccount)
+                .extracting("id", "name", "balance")
+                .containsExactly(1, "John Doe", 200.00);
+    }
+
+    @Test
+    public void testWithdraw() {
+        //arrange
+        RegularAccount regularAccount = new RegularAccount();
+        regularAccount.setId(1);
+        regularAccount.setName("John Doe");
+        regularAccount.setBalance(500.00 - 200.00);
+        //execute
+        RegularAccount savedAccount = accountRepository.save(regularAccount);
+
+        //test
+        assertThat(savedAccount)
+                .extracting("id", "name", "balance")
+                .containsExactly(1, "John Doe", 300.00);
     }
 }
