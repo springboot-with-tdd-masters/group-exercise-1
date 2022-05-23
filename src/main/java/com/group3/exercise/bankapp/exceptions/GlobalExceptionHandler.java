@@ -10,13 +10,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(AccountTransactionException.class)
-    public ResponseEntity<ErrorMsgWrapper> handleInvalidTransactionException(AccountTransactionException ex, WebRequest webRequest){
-        return ResponseEntity.status(ex.getHttpStatus()).body(new ErrorMsgWrapper(ex.getErrorMsg()));
-    }
-
-    @ExceptionHandler(InvalidAccountTypeException.class)
-    public ResponseEntity<ErrorMsgWrapper> handleInvalidAccountTypeException(InvalidAccountTypeException ex, WebRequest webRequest){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMsgWrapper("Invalid Account Type"));
+    @ExceptionHandler(BankAppException.class)
+    public ResponseEntity<ErrorMsgWrapper> handleBankAppException(BankAppException ex, WebRequest req){
+        return ResponseEntity.status(ex.getStatus()).body(new ErrorMsgWrapper(ex.getMessage()));
     }
 }
