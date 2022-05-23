@@ -22,7 +22,7 @@ public class AccountAdapter {
             response.setPenalty(account.getPenalty());
             return response;
         } catch (Exception e){
-            throw new BankAppException(BankAppExceptionCode.BAD_REQUEST);
+            throw new BankAppException(BankAppExceptionCode.MAPPING_EXCEPTION);
         }
     }
 
