@@ -121,9 +121,8 @@ public class AccountControllerTest {
         // then
         verify(service, times(1)).register(any(CreateAccountRequest.class));
         result.andExpect(MockMvcResultMatchers.status().is5xxServerError());
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.error", is("Unable to process transaction")));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.error", is("Unable to process your request")));
     }
-
    
 	@Test	
     @DisplayName("should return 400 for transaction request with invalid amount")
