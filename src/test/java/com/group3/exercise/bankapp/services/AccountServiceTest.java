@@ -114,11 +114,7 @@ public class AccountServiceTest {
         request.setAmount(100.0);
         when(repository.findById(anyLong())).thenReturn(Optional.of(new InterestAccount()));
         when(navigator.deposit(any(InterestAccount.class), anyDouble())).thenReturn(new InterestAccount());
-<<<<<<< HEAD
         when(adapter.mapToResponse(any(InterestAccount.class))).thenThrow(new BankAppException(BankAppExceptionCode.MAPPING_EXCEPTION));
-=======
-        when(adapter.mapToResponse(any(InterestAccount.class))).thenThrow(new BankAppException(BankAppExceptionCode.BAD_REQUEST));
->>>>>>> 93f8512401ac59d434523d53fc643f96425d2eae
         when(repository.save(any(InterestAccount.class))).thenReturn(new InterestAccount());
         BankAppException actual = assertThrows(BankAppException.class, () -> service.deposit(1L, request));
         assertEquals("Unable to map response", actual.getMessage());
