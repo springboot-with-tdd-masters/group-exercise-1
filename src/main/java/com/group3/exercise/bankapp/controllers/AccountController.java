@@ -1,6 +1,5 @@
 package com.group3.exercise.bankapp.controllers;
 
-<<<<<<< HEAD
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -48,7 +47,9 @@ public class AccountController {
     public ResponseEntity<Void> deleteAccountById(@PathVariable("id") Long id) {
     	service.deleteAccountById(id);
     	return ResponseEntity.noContent().build();
-
+    	
+    }
+    
     @PostMapping(path = "/{accountId}/transactions")
     public AccountResponse transact(@PathVariable("accountId") Long accountId, @RequestBody TransactionRequest request){
         if(TransactionTypes.isContaining(request.getType())){

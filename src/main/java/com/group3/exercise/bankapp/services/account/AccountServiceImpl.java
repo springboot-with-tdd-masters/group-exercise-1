@@ -4,17 +4,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.group3.exercise.bankapp.adapters.AccountAdapter;
-<<<<<<< HEAD
 import com.group3.exercise.bankapp.entities.Account;
-import com.group3.exercise.bankapp.exceptions.AccountTransactionException;
-=======
 import com.group3.exercise.bankapp.exceptions.BankAppException;
 import com.group3.exercise.bankapp.exceptions.BankAppExceptionCode;
->>>>>>> group3/exceptions
 import com.group3.exercise.bankapp.repository.AccountRepository;
 import com.group3.exercise.bankapp.request.CreateAccountRequest;
 import com.group3.exercise.bankapp.request.TransactionRequest;
@@ -78,7 +73,7 @@ public class AccountServiceImpl implements AccountService {
 	@Override
 	public AccountResponse getAccountById(Long id) {
 		return Optional.of(id).map(accountRepository::findById).map(Optional::get).map(accountAdapter::mapToResponse)
-				.orElseThrow(AccountTransactionException::new);
+				.orElseThrow(() -> new BankAppException(BankAppExceptionCode.ACCOUNT_NOT_FOUND_EXCEPTION));
 	}
 
 	@Override
@@ -89,7 +84,7 @@ public class AccountServiceImpl implements AccountService {
 			accountRepository.deleteById(id);
 			return account.get();
 		} else {
-			throw new AccountTransactionException(HttpStatus.BAD_REQUEST, "There is no account with that ID");
+			throw new BankAppException(BankAppExceptionCode.ACCOUNT_NOT_FOUND_EXCEPTION);
 		}
 	}
 }
