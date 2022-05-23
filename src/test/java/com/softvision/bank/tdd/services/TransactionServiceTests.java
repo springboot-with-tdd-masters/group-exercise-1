@@ -68,7 +68,7 @@ public class TransactionServiceTests {
         assertSame(saveAccountCaptor.getValue(), actualAccount);
         //check returned account
         assertEquals(CHK_MOCK_BALANCE + amountDeposited - ApplicationConstants.CHK_CHARGE,
-                actualAccount.getBalance(), 1099);
+                actualAccount.getBalance());
         //verify number of resource calls
         verify(mockedAccountRepository, atMostOnce()).findById(anyLong());
         verify(mockedAccountRepository, atMostOnce()).save(any());

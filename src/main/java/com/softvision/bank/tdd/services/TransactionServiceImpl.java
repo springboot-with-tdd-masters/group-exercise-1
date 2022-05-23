@@ -39,9 +39,6 @@ public class TransactionServiceImpl implements TransactionService {
 
 	private void doDeposit(Account account, double amount) {
 		double balance = Double.sum(account.getBalance(), amount);
-		if (account instanceof CheckingAccount) {
-			balance -= account.getTransactionCharge();
-		}
 		account.setBalance(balance);
 	}
 
