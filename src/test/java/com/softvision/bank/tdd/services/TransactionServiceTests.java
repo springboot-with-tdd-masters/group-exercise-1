@@ -30,96 +30,128 @@ public class TransactionServiceTests {
     ArgumentCaptor<Account> saveAccountCaptor;
 
     @Test
-    @DisplayName("Account - Should add account deposited")
-    void test_deposit()  {
+    @DisplayName("Deposit Regular Account - Should add account deposited")
+    void test_deposit_regular()  {
         //setup mocked returns
+        double amountDeposited = 100.0;
         Account mockedRegularAccount = getMockRegularAccount();
         when(mockedAccountRepository.findById(REG_MOCK_ACCT_ID)).thenReturn(Optional.of(mockedRegularAccount));
         when(mockedAccountRepository.save(saveAccountCaptor.capture())).thenReturn(mockedRegularAccount);
 
         //run
         Account actualAccount = transactionService.transact(REG_MOCK_ACCT_ID,
-                new Transaction(ApplicationConstants.DEPOSIT, 100));
-
-        //check argument passed at save call
-        assertEquals((int) saveAccountCaptor.getValue().getBalance(), 1600);
-        //check returned account
-        assertEquals((int) actualAccount.getBalance(), 1600);
-    }
-
-    @Test
-    @DisplayName("Regular Account - Should subtract amount withdrawn")
-    void test_withdraw_regularAcct()  {
-        //setup mocked returns
-        Account mockedRegularAccount = getMockRegularAccount();
-        when(mockedAccountRepository.findById(REG_MOCK_ACCT_ID)).thenReturn(Optional.of(mockedRegularAccount));
-        when(mockedAccountRepository.save(saveAccountCaptor.capture())).thenReturn(mockedRegularAccount);
-
-        //run
-        Account actualAccount = transactionService.transact(REG_MOCK_ACCT_ID,
-                new Transaction(ApplicationConstants.WITHDRAW, 100));
+                new Transaction(ApplicationConstants.DEPOSIT, amountDeposited));
 
         //check argument passed at save call
         assertSame(saveAccountCaptor.getValue(), actualAccount);
         //check returned account
-        assertEquals((int) actualAccount.getBalance(), 1400);
+        assertEquals(REG_MOCK_BALANCE + amountDeposited,
+                actualAccount.getBalance());
     }
 
     @Test
-    @DisplayName("Regular Account - Should subtract amount withdrawn with penalties")
-    void test_withdraw_regularAcct_withPenalties()  {
-        //setup mocked returns -
+    @DisplayName("Deposit Checking Account - Should add account deposited, with charge")
+    void test_deposit_checking()  {
+        //setup mocked returns
+        double amountDeposited = 100.0;
+        Account mockCheckingAccount = getMockCheckingAccount();
+        when(mockedAccountRepository.findById(CHK_MOCK_ACCT_ID)).thenReturn(Optional.of(mockCheckingAccount));
+        when(mockedAccountRepository.save(saveAccountCaptor.capture())).thenReturn(mockCheckingAccount);
+
+        //run
+        Account actualAccount = transactionService.transact(CHK_MOCK_ACCT_ID,
+                new Transaction(ApplicationConstants.DEPOSIT, amountDeposited));
+
+        //check argument passed at save call
+        assertSame(saveAccountCaptor.getValue(), actualAccount);
+        //check returned account
+        assertEquals(CHK_MOCK_BALANCE + amountDeposited - ApplicationConstants.CHK_CHARGE,
+                actualAccount.getBalance(), 1099);
+    }
+
+    @Test
+    @DisplayName("Withdraw Regular Account - Should subtract amount withdrawn")
+    void test_withdraw_regularAcct()  {
+        //setup mocked returns
+        double amountWithdrawn = 100.0;
         Account mockedRegularAccount = getMockRegularAccount();
-        mockedRegularAccount.setBalance(500);
+        when(mockedAccountRepository.findById(REG_MOCK_ACCT_ID)).thenReturn(Optional.of(mockedRegularAccount));
+        when(mockedAccountRepository.save(saveAccountCaptor.capture())).thenReturn(mockedRegularAccount);
+
+        //run
+        Account actualAccount = transactionService.transact(REG_MOCK_ACCT_ID,
+                new Transaction(ApplicationConstants.WITHDRAW, amountWithdrawn));
+
+        //check argument passed at save call
+        assertSame(saveAccountCaptor.getValue(), actualAccount);
+        //check returned account
+        assertEquals(REG_MOCK_BALANCE - amountWithdrawn,
+                actualAccount.getBalance());
+    }
+
+    @Test
+    @DisplayName("Withdraw Regular Account - Should subtract amount withdrawn with penalties")
+    void test_withdraw_regularAcct_withPenalties()  {
+        //setup mocked returns
+        double balanceUnderMinimum = ApplicationConstants.REG_MIN_BALANCE - 1;
+        double amountWithdrawn = 100;
+        Account mockedRegularAccount = getMockRegularAccount();
+        mockedRegularAccount.setBalance(balanceUnderMinimum);
         when(mockedAccountRepository.findById(REG_MOCK_ACCT_ID)).thenReturn(Optional.of(mockedRegularAccount));
         when(mockedAccountRepository.save(saveAccountCaptor.capture())).thenReturn(mockedRegularAccount);
 
         //run - should fall under minimum balance (500)
         Account actualAccount = transactionService.transact(REG_MOCK_ACCT_ID,
-                new Transaction(ApplicationConstants.WITHDRAW, 100));
+                new Transaction(ApplicationConstants.WITHDRAW, amountWithdrawn));
 
         //check argument passed at save call
         assertSame(saveAccountCaptor.getValue(), actualAccount);
         //check returned account
-        assertEquals((int) actualAccount.getBalance(), 390);
+        assertEquals(balanceUnderMinimum - amountWithdrawn - ApplicationConstants.REG_PENALTY,
+                actualAccount.getBalance());
     }
 
 
     @Test
-    @DisplayName("Checking Account- Should subtract amount withdrawn")
+    @DisplayName("Withdraw Checking Account- Should subtract amount withdrawn with charge")
     void test_withdraw_checking()  {
         //setup mocked returns
+        double amountWithdrawn = 100;
         Account mockedCheckingAccount = getMockCheckingAccount();
         when(mockedAccountRepository.findById(CHK_MOCK_ACCT_ID)).thenReturn(Optional.of(mockedCheckingAccount));
         when(mockedAccountRepository.save(saveAccountCaptor.capture())).thenReturn(mockedCheckingAccount);
 
         //run
         Account actualAccount = transactionService.transact(CHK_MOCK_ACCT_ID,
-                new Transaction(ApplicationConstants.WITHDRAW, 100));
+                new Transaction(ApplicationConstants.WITHDRAW, amountWithdrawn));
 
         //check argument passed at save call
         assertSame(saveAccountCaptor.getValue(), actualAccount);
         //check returned account
-        assertEquals((int)actualAccount.getBalance(), 899);
+        assertEquals(CHK_MOCK_BALANCE - amountWithdrawn - ApplicationConstants.CHK_CHARGE,
+                actualAccount.getBalance());
     }
 
     @Test
-    @DisplayName("Checking Account- Should subtract amount withdrawn with penalty and charge")
+    @DisplayName("Withdraw Checking Account- Should subtract amount withdrawn with penalty and charge")
 	void test_withdraw_checking_withPenaltyAndCharge() {
 		// setup mocked returns
+        double amountWithdrawn = 50;
+        double balanceUnderMin = 90;
         Account mockedCheckingAccount = getMockCheckingAccount();
-        mockedCheckingAccount.setBalance(90);
+        mockedCheckingAccount.setBalance(balanceUnderMin);
         when(mockedAccountRepository.findById(CHK_MOCK_ACCT_ID)).thenReturn(Optional.of(mockedCheckingAccount));
         when(mockedAccountRepository.save(saveAccountCaptor.capture())).thenReturn(mockedCheckingAccount);
 
         //run
         Account actualAccount = transactionService.transact(CHK_MOCK_ACCT_ID,
-                new Transaction(ApplicationConstants.WITHDRAW, 50));
+                new Transaction(ApplicationConstants.WITHDRAW, amountWithdrawn));
 
         //check argument passed at save call
         assertSame(saveAccountCaptor.getValue(), actualAccount);
         //check returned account
-        assertEquals((int)actualAccount.getBalance(), 29);
+        assertEquals(balanceUnderMin - amountWithdrawn - ApplicationConstants.CHK_CHARGE - ApplicationConstants.CHK_PENALTY,
+                actualAccount.getBalance());
     }
 
     @Test

@@ -25,7 +25,11 @@ public class TransactionServiceImpl implements TransactionService {
 		switch (of(transaction).map(Transaction::getType).map(String::toUpperCase)
 				.orElseThrow(BadRequestException::new)) {
 			case ApplicationConstants.DEPOSIT:
-				account.setBalance(Double.sum(account.getBalance(), transaction.getAmount()));
+				double balance = Double.sum(account.getBalance(), transaction.getAmount());
+				if (account instanceof CheckingAccount) {
+					balance = Double.sum(balance, -1 * account.getTransactionCharge());
+				}
+				account.setBalance(balance);
 				break;
 			case ApplicationConstants.WITHDRAW:
 				if (transaction.getAmount() > account.getBalance()) {
