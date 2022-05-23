@@ -23,7 +23,6 @@ public class AccountAdapter {
             return response;
         } catch (Exception e){
             throw new BankAppException(BankAppExceptionCode.MAPPING_EXCEPTION);
-
         }
     }
 
