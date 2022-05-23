@@ -1,6 +1,10 @@
 package com.softvision.bank.tdd;
 
 public class ApplicationConstants {
+
+    public static final String REGULAR = "regular";
+    public static final String CHECKING = "checking";
+    public static final String INTEREST = "interest";
     public static final String WITHDRAW = "WITHDRAW";
     public static final String DEPOSIT = "DEPOSIT";
 

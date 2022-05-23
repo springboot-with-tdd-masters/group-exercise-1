@@ -12,13 +12,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.softvision.bank.tdd.ApplicationConstants;
+import com.softvision.bank.tdd.model.CheckingAccount;
+import com.softvision.bank.tdd.model.InterestAccount;
+import com.softvision.bank.tdd.model.RegularAccount;
+import com.softvision.bank.tdd.services.BankAccountsService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.softvision.bank.tdd.exceptions.BadRequestException;
@@ -27,10 +35,17 @@ import com.softvision.bank.tdd.model.Account;
 
 import static com.softvision.bank.tdd.AccountMocks.*;
 
-@WebMvcTest
 @AutoConfigureMockMvc
-class BankAccountsControllerTest extends AbstractControllerTests {
+@WebMvcTest(controllers = BankAccountsController.class)
+class BankAccountsControllerTest {
 
+	@Autowired
+	MockMvc mockMvc;
+
+	@MockBean
+	BankAccountsService bankAccountsService;
+
+	static final ObjectMapper objectMapper = new ObjectMapper();
 	@Nested
 	@DisplayName("Get Account By Id Tests")
 	class GetAccountByIdTests {
@@ -149,8 +164,9 @@ class BankAccountsControllerTest extends AbstractControllerTests {
 		@Test
 		@DisplayName("Should create regular account")
 		void test_create_regular_account() throws Exception {
-			when(bankAccountsService.createUpdate(argThat(account -> MOCK_NAME.equals(account.getName()))))
-					.thenReturn(getMockRegularAccount());
+			when(bankAccountsService.createUpdate(argThat(account -> MOCK_NAME.equals(account.getName())
+					&& account instanceof RegularAccount)))
+				.thenReturn(getMockRegularAccount());
 
 			mockMvc.perform(
 					post("/accounts").content(objectMapper.writeValueAsString(getMockRegularAccount()))
@@ -169,11 +185,12 @@ class BankAccountsControllerTest extends AbstractControllerTests {
 		@Test
 		@DisplayName("Should create checking account")
 		void test_create_checking_account() throws Exception {
-			when(bankAccountsService.createUpdate(argThat(account -> MOCK_NAME.equals(account.getName()))))
-					.thenReturn(getMockCheckingAccount());
+			when(bankAccountsService.createUpdate(argThat(account -> MOCK_NAME.equals(account.getName())
+					&& account instanceof CheckingAccount)))
+				.thenReturn(getMockCheckingAccount());
 
 			mockMvc.perform(
-					post("/accounts").content(objectMapper.writeValueAsString(getMockRegularAccount()))
+					post("/accounts").content(objectMapper.writeValueAsString(getMockCheckingAccount()))
 							.contentType(MediaType.APPLICATION_JSON))
 					.andExpect(status().isCreated()).andExpect(jsonPath("type").value("checking"))
 					.andExpect(jsonPath("name").value(MOCK_NAME))
@@ -189,8 +206,9 @@ class BankAccountsControllerTest extends AbstractControllerTests {
 		@Test
 		@DisplayName("Should create interest account")
 		void test_create_interest_account() throws Exception {
-			when(bankAccountsService.createUpdate(argThat(account -> MOCK_NAME.equals(account.getName()))))
-					.thenReturn(getMockInterestAccount());
+			when(bankAccountsService.createUpdate(argThat(account -> MOCK_NAME.equals(account.getName())
+					&& account instanceof InterestAccount)))
+				.thenReturn(getMockInterestAccount());
 
 			mockMvc.perform(
 					post("/accounts").content(objectMapper.writeValueAsString(getMockInterestAccount()))

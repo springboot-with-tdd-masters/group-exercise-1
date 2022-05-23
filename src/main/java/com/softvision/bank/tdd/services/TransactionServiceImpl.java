@@ -25,24 +25,31 @@ public class TransactionServiceImpl implements TransactionService {
 		switch (of(transaction).map(Transaction::getType).map(String::toUpperCase)
 				.orElseThrow(BadRequestException::new)) {
 			case ApplicationConstants.DEPOSIT:
-				double balance = Double.sum(account.getBalance(), transaction.getAmount());
-				if (account instanceof CheckingAccount) {
-					balance = Double.sum(balance, -1 * account.getTransactionCharge());
-				}
-				account.setBalance(balance);
+				doDeposit(account, transaction.getAmount());
 				break;
 			case ApplicationConstants.WITHDRAW:
-				if (transaction.getAmount() > account.getBalance()) {
-					throw new InsufficientFundsAvailable();
-				}
-				double diff = account.getBalance() - transaction.getAmount();
-				account.setBalance(diff);
+				doWithdraw(account, transaction.getAmount());
 				break;
 			default:
 				throw new BadRequestException();
 		}
 		computeCharges(account);
 		return accountRepository.save(account);
+	}
+
+	private void doDeposit(Account account, double amount) {
+		double balance = Double.sum(account.getBalance(), amount);
+		if (account instanceof CheckingAccount) {
+			balance -= account.getTransactionCharge();
+		}
+		account.setBalance(balance);
+	}
+
+	private void doWithdraw(Account account, double amount) {
+		if (amount > account.getBalance()) {
+			throw new InsufficientFundsAvailable();
+		}
+		account.setBalance(account.getBalance() - amount);
 	}
 
 	private static void computeCharges(Account account) {
