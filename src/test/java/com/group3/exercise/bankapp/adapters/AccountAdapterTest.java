@@ -3,7 +3,7 @@ package com.group3.exercise.bankapp.adapters;
 
 import com.group3.exercise.bankapp.entities.Account;
 import com.group3.exercise.bankapp.entities.InterestAccount;
-import com.group3.exercise.bankapp.exceptions.AccountTransactionException;
+import com.group3.exercise.bankapp.exceptions.BankAppException;
 import com.group3.exercise.bankapp.response.AccountResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,7 +50,7 @@ public class AccountAdapterTest {
     @Test
     @DisplayName("should throw InvalidAccountTransactionException on null object")
     void shouldThrowInvalidAccountTransactionExceptionNull(){
-        AccountTransactionException ex = assertThrows(AccountTransactionException.class, () -> adapter.mapToResponse(null));
-        assertEquals("Unable to map response", ex.getErrorMsg());
+        BankAppException ex = assertThrows(BankAppException.class, () -> adapter.mapToResponse(null));
+        assertEquals("Unable to map response", ex.getMessage());
     }
 }

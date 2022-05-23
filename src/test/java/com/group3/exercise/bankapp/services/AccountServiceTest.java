@@ -1,27 +1,35 @@
 package com.group3.exercise.bankapp.services;
 
-import com.group3.exercise.bankapp.adapters.AccountAdapter;
-import com.group3.exercise.bankapp.entities.InterestAccount;
-import com.group3.exercise.bankapp.exceptions.AccountTransactionException;
-import com.group3.exercise.bankapp.repository.AccountRepository;
-import com.group3.exercise.bankapp.request.TransactionRequest;
-import com.group3.exercise.bankapp.response.AccountResponse;
-import com.group3.exercise.bankapp.services.account.AccountService;
-import com.group3.exercise.bankapp.services.account.AccountServiceImpl;
-import com.group3.exercise.bankapp.services.transaction.TransactionStrategyNavigator;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
+import com.group3.exercise.bankapp.adapters.AccountAdapter;
+import com.group3.exercise.bankapp.entities.InterestAccount;
+import com.group3.exercise.bankapp.exceptions.AccountTransactionException;
+import com.group3.exercise.bankapp.exceptions.BankAppException;
+import com.group3.exercise.bankapp.exceptions.BankAppExceptionCode;
+import com.group3.exercise.bankapp.repository.AccountRepository;
+import com.group3.exercise.bankapp.request.TransactionRequest;
+import com.group3.exercise.bankapp.response.AccountResponse;
+import com.group3.exercise.bankapp.services.account.AccountService;
+import com.group3.exercise.bankapp.services.account.AccountServiceImpl;
+import com.group3.exercise.bankapp.services.transaction.TransactionStrategyNavigator;
 
 @ExtendWith(MockitoExtension.class)
 public class AccountServiceTest {

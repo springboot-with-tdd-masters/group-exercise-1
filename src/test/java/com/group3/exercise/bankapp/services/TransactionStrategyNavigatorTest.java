@@ -20,7 +20,7 @@ import com.group3.exercise.bankapp.entities.Account;
 import com.group3.exercise.bankapp.entities.CheckingAccount;
 import com.group3.exercise.bankapp.entities.InterestAccount;
 import com.group3.exercise.bankapp.entities.RegularAccount;
-import com.group3.exercise.bankapp.exceptions.InvalidAccountTypeException;
+import com.group3.exercise.bankapp.exceptions.BankAppException;
 import com.group3.exercise.bankapp.services.transaction.TransactionStrategyNavigator;
 import com.group3.exercise.bankapp.services.transaction.impl.CheckingTransactionStrategy;
 import com.group3.exercise.bankapp.services.transaction.impl.InterestTransactionStrategy;
@@ -70,7 +70,7 @@ public class TransactionStrategyNavigatorTest {
         // given
         // when
         // then
-        assertThrows(InvalidAccountTypeException.class, () -> navigator.generateNewAccountDetails("JOHN DOE", "987654321", "credit"));
+        assertThrows(BankAppException.class, () -> navigator.generateNewAccountDetails("JOHN DOE", "987654321", "credit"));
     }
 
     @Test
