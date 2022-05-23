@@ -1,18 +1,22 @@
 package com.group3.exercise.bankapp.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.group3.exercise.bankapp.entities.Account;
-import com.group3.exercise.bankapp.exceptions.AccountTransactionException;
-import com.group3.exercise.bankapp.exceptions.GlobalExceptionHandler;
-import com.group3.exercise.bankapp.exceptions.InvalidAccountTypeException;
-import com.group3.exercise.bankapp.request.CreateAccountRequest;
-import com.group3.exercise.bankapp.response.AccountResponse;
-import com.group3.exercise.bankapp.services.account.AccountService;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,9 +27,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.group3.exercise.bankapp.exceptions.AccountTransactionException;
+import com.group3.exercise.bankapp.exceptions.GlobalExceptionHandler;
+import com.group3.exercise.bankapp.exceptions.InvalidAccountTypeException;
+import com.group3.exercise.bankapp.request.CreateAccountRequest;
+import com.group3.exercise.bankapp.response.AccountResponse;
+import com.group3.exercise.bankapp.services.account.AccountService;
 
 @WebMvcTest(controllers =  AccountController.class)
 @ExtendWith(MockitoExtension.class)
@@ -112,5 +120,43 @@ public class AccountControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.error", is("Unable to process transaction")));
     }
 
+    @Test
+	@DisplayName("should retrieve all accounts")
+	public void shouldRetrieveAllAccounts() throws Exception {
+		
+    	List<AccountResponse> response = new ArrayList<>();
+    	
+    	AccountResponse account1 = new AccountResponse();
+    	account1.setAcctNumber("123456789");
+    	account1.setBalance(100.0);
+    	account1.setId(1L);
+    	account1.setInterestCharge(0.0);
+    	account1.setMinimumBalance(0.0);
+    	account1.setName("Kobe Bryant");
+    	account1.setPenalty(0.0);
+    	account1.setTransactionCharge(0.0);
+    	
+    	AccountResponse account2 = new AccountResponse();
+    	account2.setAcctNumber("987654321");
+    	account2.setBalance(100.0);
+    	account2.setId(2L);
+    	account2.setInterestCharge(0.0);
+    	account2.setMinimumBalance(0.0);
+    	account2.setName("Lebron James");
+    	account2.setPenalty(0.0);
+    	account2.setTransactionCharge(0.0);
+    	
+    	response.add(account1);
+    	response.add(account2);
+		
+		when(service.getAllAccounts()).thenReturn(response);
 
+		mvc.perform(get("/accounts").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value("1"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Kobe Bryant"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[0].acctNumber").value("123456789"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value("2"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Lebron James"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$[1].acctNumber").value("987654321"));
+	}
 }
