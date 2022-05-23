@@ -22,7 +22,7 @@ public class AccountAdapter {
             response.setPenalty(account.getPenalty());
             return response;
         } catch (Exception e){
-            throw new AccountTransactionException(HttpStatus.BAD_REQUEST, "Unable to map response");
+            throw new BankAppException(BankAppExceptionCode.MAPPING_EXCEPTION);
         }
     }
 
