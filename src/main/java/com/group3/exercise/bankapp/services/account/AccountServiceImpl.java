@@ -1,7 +1,10 @@
 package com.group3.exercise.bankapp.services.account;
 
 import com.group3.exercise.bankapp.adapters.AccountAdapter;
+<<<<<<< HEAD
 import com.group3.exercise.bankapp.entities.Account;
+=======
+>>>>>>> 93f8512401ac59d434523d53fc643f96425d2eae
 import com.group3.exercise.bankapp.exceptions.BankAppException;
 import com.group3.exercise.bankapp.exceptions.BankAppExceptionCode;
 import com.group3.exercise.bankapp.repository.AccountRepository;
@@ -35,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
                 .map(req -> this.transactionStrategyNavigator.generateNewAccountDetails(req.getName(),generateAcctNbr() ,req.getType()))
                 .map(this.accountRepository::save)
                 .map(accountAdapter::mapToResponse)
-                .orElseThrow(AccountTransactionException::new);
+                .orElseThrow(() -> new BankAppException(BankAppExceptionCode.INTERNAL_SERVER_ERROR));
     }
 
     @Override

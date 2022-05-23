@@ -1,11 +1,9 @@
 package com.group3.exercise.bankapp.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.group3.exercise.bankapp.entities.Account;
-import com.group3.exercise.bankapp.exceptions.AccountTransactionException;
+import com.group3.exercise.bankapp.exceptions.BankAppException;
+import com.group3.exercise.bankapp.exceptions.BankAppExceptionCode;
 import com.group3.exercise.bankapp.exceptions.GlobalExceptionHandler;
-import com.group3.exercise.bankapp.exceptions.InvalidAccountTypeException;
 import com.group3.exercise.bankapp.request.CreateAccountRequest;
 import com.group3.exercise.bankapp.request.TransactionRequest;
 import com.group3.exercise.bankapp.response.AccountResponse;
@@ -85,7 +83,7 @@ public class AccountControllerTest {
         CreateAccountRequest request = new CreateAccountRequest();
         request.setName("Jane Doe");
         request.setType("credit");
-        when(service.register(any(CreateAccountRequest.class))).thenThrow(new InvalidAccountTypeException());
+        when(service.register(any(CreateAccountRequest.class))).thenThrow(new BankAppException(BankAppExceptionCode.BAD_REQUEST));
         // when
         ResultActions result = mvc.perform(post("/accounts")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -103,7 +101,7 @@ public class AccountControllerTest {
         CreateAccountRequest request = new CreateAccountRequest();
         request.setName("Jane Doe");
         request.setType("interest");
-        when(service.register(any(CreateAccountRequest.class))).thenThrow(new AccountTransactionException());
+        when(service.register(any(CreateAccountRequest.class))).thenThrow(new BankAppException(BankAppExceptionCode.INTERNAL_SERVER_ERROR));
         // when
         ResultActions result = mvc.perform(post("/accounts")
                 .contentType(MediaType.APPLICATION_JSON)

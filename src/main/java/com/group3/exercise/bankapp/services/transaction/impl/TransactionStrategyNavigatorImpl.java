@@ -4,7 +4,8 @@ import com.group3.exercise.bankapp.entities.Account;
 import com.group3.exercise.bankapp.entities.CheckingAccount;
 import com.group3.exercise.bankapp.entities.InterestAccount;
 import com.group3.exercise.bankapp.entities.RegularAccount;
-import com.group3.exercise.bankapp.exceptions.InvalidAccountTypeException;
+import com.group3.exercise.bankapp.exceptions.BankAppException;
+import com.group3.exercise.bankapp.exceptions.BankAppExceptionCode;
 import com.group3.exercise.bankapp.services.transaction.TransactionStrategy;
 import com.group3.exercise.bankapp.services.transaction.TransactionStrategyNavigator;
 import org.springframework.stereotype.Service;
@@ -38,20 +39,20 @@ public class TransactionStrategyNavigatorImpl implements TransactionStrategyNavi
     public Account generateNewAccountDetails(String name, String acctNumber, String type) {
         return Optional.ofNullable(txnTypeLookup.get(type))
                 .map(txn -> txn.generateNewAccountDetails(name, acctNumber))
-                .orElseThrow(InvalidAccountTypeException::new);
+                .orElseThrow(() -> new BankAppException(BankAppExceptionCode.BAD_REQUEST));
     }
 
     @Override
     public Account withdraw(Account account, Double amount) {
        return Optional.ofNullable(txnLookup.get(account.getClass()))
                 .map(txn -> txn.withdraw(account, amount))
-                .orElseThrow(InvalidAccountTypeException::new);
+               .orElseThrow(() -> new BankAppException(BankAppExceptionCode.BAD_REQUEST));
     }
 
     @Override
     public Account deposit(Account account, Double amount) {
         return Optional.ofNullable(txnLookup.get(account.getClass()))
                 .map(txn -> txn.deposit(account, amount))
-                .orElseThrow(InvalidAccountTypeException::new);
+                .orElseThrow(() -> new BankAppException(BankAppExceptionCode.BAD_REQUEST));
     }
 }
