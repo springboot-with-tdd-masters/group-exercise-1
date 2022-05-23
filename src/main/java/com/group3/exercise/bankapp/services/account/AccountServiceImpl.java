@@ -1,5 +1,12 @@
 package com.group3.exercise.bankapp.services.account;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import com.group3.exercise.bankapp.adapters.AccountAdapter;
 import com.group3.exercise.bankapp.entities.Account;
 import com.group3.exercise.bankapp.exceptions.BankAppException;
@@ -9,10 +16,6 @@ import com.group3.exercise.bankapp.request.CreateAccountRequest;
 import com.group3.exercise.bankapp.request.TransactionRequest;
 import com.group3.exercise.bankapp.response.AccountResponse;
 import com.group3.exercise.bankapp.services.transaction.TransactionStrategyNavigator;
-import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-import java.util.Random;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -74,8 +77,29 @@ public class AccountServiceImpl implements AccountService {
     private String generateAcctNbr(){
         return String.valueOf(new Random().nextInt(99999999));
     }
-
     private boolean isValidAmount(Double amount){
         return amount > 0.0;
     }
+	@Override
+	public List<AccountResponse> getAllAccounts() {
+		return accountRepository.findAll().stream().map(accountAdapter::mapToResponse).collect(Collectors.toList());
+	}
+
+	@Override
+	public AccountResponse getAccountById(Long id) {
+		return Optional.of(id).map(accountRepository::findById).map(Optional::get).map(accountAdapter::mapToResponse)
+				.orElseThrow(() -> new BankAppException(BankAppExceptionCode.ACCOUNT_NOT_FOUND_EXCEPTION));
+	}
+
+	@Override
+	public Account deleteAccountById(Long id) {
+		Optional<Account> account = accountRepository.findById(id);
+		
+		if (account.isPresent()) {
+			accountRepository.deleteById(id);
+			return account.get();
+		} else {
+			throw new BankAppException(BankAppExceptionCode.ACCOUNT_NOT_FOUND_EXCEPTION);
+		}
+	}
 }
