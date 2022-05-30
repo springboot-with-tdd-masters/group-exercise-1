@@ -35,9 +35,6 @@ public class InterestTransactionStrategy implements TransactionStrategy<Interest
         // TODO update account entity with business rules
 
         Double currentBalance = getDefaultValue(account.getBalance());
-        if(amount > currentBalance){
-            throw new BankAppException(BankAppExceptionCode.INSUFFICIENT_BALANCE_EXCEPTION);
-        }
         Double updated = currentBalance - amount;
         account.setBalance(updated);
         return account;
