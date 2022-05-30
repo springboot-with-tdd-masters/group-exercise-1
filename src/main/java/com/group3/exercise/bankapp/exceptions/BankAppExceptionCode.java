@@ -10,7 +10,8 @@ public enum BankAppExceptionCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "Invalid Account Type"),
     MAPPING_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to map response"),
     SERVER_TRANSACTION_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to process your request"),
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "your internal server error message")
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "your internal server error message"),
+    INSUFFICIENT_BALANCE_EXCEPTION(HttpStatus.BAD_REQUEST, "Account has insufficient balance")
     ;
 
 
