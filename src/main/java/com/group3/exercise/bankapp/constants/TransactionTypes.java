@@ -1,7 +1,6 @@
 package com.group3.exercise.bankapp.constants;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 public enum TransactionTypes {
     WITHDRAW("withdraw"),
@@ -17,10 +16,6 @@ public enum TransactionTypes {
     }
 
     public static boolean isContaining(String value) {
-        return findOptionalByLabel(value).isPresent();
-    }
-
-    public static Optional<TransactionTypes> findOptionalByLabel(String value) {
-        return Arrays.stream(TransactionTypes.values()).filter(s -> value.equals(s.value)).findAny();
+        return Arrays.stream(TransactionTypes.values()).filter(s -> value.equals(s.value)).findAny().isPresent();
     }
 }

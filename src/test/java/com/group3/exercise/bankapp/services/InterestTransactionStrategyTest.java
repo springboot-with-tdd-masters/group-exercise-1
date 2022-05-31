@@ -34,6 +34,7 @@ public class InterestTransactionStrategyTest {
         // then
         assertEquals(actual.getInterestCharge(), 0.03);
         assertEquals(actual.getMinimumBalance(), 0.0);
+        assertEquals(actual.getAcctNumber(), acctNbr);
     }
     @Test
     @DisplayName("Should withdraw from account")
